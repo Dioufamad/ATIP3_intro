@@ -1,0 +1,132 @@
+This is the file following the course of the run:
+This analysis is named : TestNewDM and is supported by 10 cores
+It will carry out these SL tasks : Classif.
+For the classification task, each of these algorithms will be tested : RF_Mark2Vpar
+...For those classification algorithms, the studies requested are : Both
+...Each of those classification studies will be run on 1 seeds.
+...and the OMC search to carry out is :  OMClight
+[92mEngaging Classification task of the analysis named TestNewDM...[0m
+Following files included to the analysis as sources of features information :
+BRCA_Treatment17_BestResCat_GEX.csv
+Following files included to the analysis as sources of treatments information : 
+pdxe_treatments50.csv
+Based on collected information, here is a set of cancer types to explore :  ['BRCA']
+Based on collected information, here is a set of drugs to explore :  ['Treatment17']
+Based on collected information, here is a set of profiles to explore :  ['GEX']
+[93mNumber of samples presented is suffisant for classification. Restricting of data to analysed subcases is starting...[0m
+[4mEntire dataframe is obtained for following subcase:  BRCA Treatment17 GEX[0m
+Features values formatting : categoricals as booleans and reals as floats...
+Sorting the dataframe entries following response column values and remaking a new index...
+[93mNumber of samples is suffisant after data formatting. Full analysis of the subcase ( BRCA - Treatment17 - GEX ) is starting...[0m
+>>>>>>>>>>>>>>>>>>>>>>>>ME in developpement<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+[1mResult file created for this subcase analysis, each line is a seed and last is all sedds averaging. Contains : 0 lines[0m
+[93mData sparsity on classes checked. No data issue met. Analysis ongoing...[0m
+ PREPARING FOR OUTER LOOP 1 : creation of metrics collectors by seed
+[92m > START OF OUTER LOOP 1 (OL1): loop on all 1 seeds...[0m
+[92m > - OL1's seed 0 has started being used...[0m
+This following cross-validation has been done : 
+StratifiedKFold(n_splits=10, random_state=0, shuffle=True)
+The fold : 1
+- training set indexes [0, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36]
+- testing set indexes [1, 6, 27, 35, 37]
+The fold : 2
+- training set indexes [0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 35, 36, 37]
+- testing set indexes [8, 9, 18, 28, 34]
+The fold : 3
+- training set indexes [0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 37]
+- testing set indexes [4, 13, 32, 36]
+The fold : 4
+- training set indexes [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37]
+- testing set indexes [2, 14, 16, 26]
+The fold : 5
+- training set indexes [0, 1, 2, 3, 4, 5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37]
+- testing set indexes [7, 10, 19, 20]
+The fold : 6
+- training set indexes [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37]
+- testing set indexes [11, 15, 24, 31]
+The fold : 7
+- training set indexes [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37]
+- testing set indexes [3, 25, 29]
+The fold : 8
+- training set indexes [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 35, 36, 37]
+- testing set indexes [0, 21, 33]
+The fold : 9
+- training set indexes [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 36, 37]
+- testing set indexes [5, 23, 30]
+The fold : 10
+- training set indexes [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37]
+- testing set indexes [12, 17, 22]
+[93m >> START OF OUTER LOOP 2 (OL2): LOOCV on all data ie on 10 folds[0m
+[93m >> Objective : The models (2 to n/2, allfts) complexities and their predictions will be searched for comparison to find OMC[0m
+[93m >> - OL2's fold 1 has started being used...[0m
+[93m >> -- Training and prediction of an Allfts model[0m
+1 model prediction done :  [[0.398 0.602]
+ [0.47  0.53 ]
+ [0.396 0.604]
+ [0.442 0.558]
+ [0.31  0.69 ]]
+This following cross-validation has been done : 
+StratifiedKFold(n_splits=10, random_state=0, shuffle=True)
+The fold : 1
+- training set indexes [0, 2, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34]
+- testing set indexes [8, 10, 28, 36]
+The fold : 2
+- training set indexes [0, 2, 3, 4, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 36]
+- testing set indexes [5, 13, 18, 26]
+The fold : 3
+- training set indexes [0, 2, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 32, 34, 36]
+- testing set indexes [3, 15, 31, 33]
+The fold : 4
+- training set indexes [0, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36]
+- testing set indexes [2, 11, 16, 19]
+The fold : 5
+- training set indexes [0, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 28, 29, 31, 32, 33, 34, 36]
+- testing set indexes [9, 20, 30]
+The fold : 6
+- training set indexes [0, 2, 3, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 36]
+- testing set indexes [12, 21, 25]
+The fold : 7
+- training set indexes [0, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 28, 29, 30, 31, 32, 33, 36]
+- testing set indexes [4, 24, 34]
+The fold : 8
+- training set indexes [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 28, 29, 30, 31, 33, 34, 36]
+- testing set indexes [0, 23, 32]
+The fold : 9
+- training set indexes [0, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 36]
+- testing set indexes [7, 17, 22]
+The fold : 10
+- training set indexes [0, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 30, 31, 32, 33, 34, 36]
+- testing set indexes [14, 29]
+[94m >>> START OF INNER LOOP 1 (IL1): LOOCV on OL2 present fold 1 training data. Going for 10 folds[0m
+[94m >>> With each fold, training and prediction with many MCs and thus determining later OMC on one IL1 loop[0m
+1 tasks charged in queue out of 10 results expected. Expecting additional content...
+2 tasks charged in queue out of 10 results expected. Expecting additional content...
+3 tasks charged in queue out of 10 results expected. Expecting additional content...
+4 tasks charged in queue out of 10 results expected. Expecting additional content...
+5 tasks charged in queue out of 10 results expected. Expecting additional content...
+6 tasks charged in queue out of 10 results expected. Expecting additional content...
+7 tasks charged in queue out of 10 results expected. Expecting additional content...
+8 tasks charged in queue out of 10 results expected. Expecting additional content...
+9 tasks charged in queue out of 10 results expected. Expecting additional content...
+10 tasks charged in queue out of 10 results expected :
+All tasks have been charged!
+[94m >>> - Task running IL1's fold 6 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 8 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 9 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 7 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 1 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 4 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 5 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 2 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 3 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m
+[94m >>> - Task running IL1's fold 10 has started being carried out...[0m
+[94m >>> - Ranking the features in the fold to get the FS for every MCs to estimate next[0m

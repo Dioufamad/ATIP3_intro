@@ -1,0 +1,271 @@
+This is the trials purpose file :
+
+> Trial14 : test if the change of columns and in the roc curves works
+> Trial15: test on all of a profile if it works and with just 2 seeds at that
+> Trial16: test if the new disposal is working
+python SL_dev_child_1.py -t "Trial16" -sl "Classif" -ca "RF_Mark2" -cs "CAB" -cla_seeds 2 -cla_msn 3
+> Trial17: test if by uncommenting the regression part the infinite loop at the end stops  happening even the 40 cors on only 6 jobs
+python SL_dev_child_1.py -t "Trial17" -sl "Classif" -ca "RF_Mark2" -cs "CAB" -cla_seeds 2 -cla_msn 3
+# Res : worked
+> Trial18 : retry 17 but with file as stdout
+# Res: stopped (produced only the .o file). the script does not exit due to multiprocessing hanging...
+> Trial19: processes killing managed. testing it on shortened data (use the testing file to continue developping on the dev child 1 file)
+python SL_dev_child_1_bckup_1.py -t "Trial19" -sl "Classif" -ca "RF_Mark2" -cs "CAB" -cla_seeds 2 -cla_msn 3
+# Res: worked
+> Trial20: extend the script with timer and get second part and test
+# the all fts model being include is not necessary because this part is dedicated to the omc not allfts mdl were nothing has been reduced
+# comment out the allfts training in il2, the part of allfts mdls calls in zipping the preds called and the renaming of the farmed frame cols has to change from 3+extracted to 2+extracted
+> Trial21 : same than 20 but with corrections
+# okay but rectify the tiles of the last 2 cols about sets of selected fts
+> Trial22: all seems okay in classification, test it with all samples of one case on 1 seed
+ python SL_dev_child_1_bckup_1.py -t "Trial22" -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 1 -cla_msn 3
+# works fine but check if the order of fts is changing or sorted
+# add tsting args into the script and run it line by line, loop by loop
+> Trial23: test the new pval ranking on 3 seeds (eta 7h30) finish at 10h30
+python SL_dev_child_1_bckup_1.py -t "Trial23" -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 3
+> Trial24:trying to get all the 10 seeds on the best case of binimetinib
+# found that i eliminate most fts in data_mgmt because they are not discriminant
+# i should not decide that but the algorithms
+> Trial25:trying to get all the 10 seeds on the best case of binimetinib with data_mgmt fixed by taking all even non discrimant
+python SL_dev_child_1_bckup_1.py -t "Trial25" -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 10
+# aborted
+> Trial26:trying to get all the 10 seeds on the best case of binimetinib with data_mgmt fixed by taking all even non discrimant
+# also do the OMC-light (not include allfts in the OMC search
+python SL_dev_child_1_bckup_1.py -t "Trial26" -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 10
+# serious results : BRCA binimetinib GEX 10 seeds
+> Trial26b: use same than trial26 (really a trial26a) to do cna (its a test of all we are doing on a cat profile)
+python SL_dev_child_1_bckup_1.py -t "Trial26b" -xproc 38 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 10 -cla_profiles_path "PDX__data/processedDataTest_1C_1T_1P_issue_dframe/processedDataTest.CNA"
+trial26c and trial26d will be the other two profiles put aside
+for testing and correcting errors:
+python SL_dev_child_1.py -t "Trial26b" -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTest_1C_1T_1P_issue_dframe/processedDataTest.CNA"
+cmdline tht worked after fixing rankerbypval : python SL_dev_child_1.py -t "Trial26b" -xproc 7 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTest_1C_1T_1P_issue_dframe/processedDataTest.CNA"
+
+
+Trial32small
+python SL_dev_child_1_bckup_1.py -t "Trial32small" -xproc 10 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 3 -cla_seeds 2 -cla_profiles_path "PDX__data/processedDataTrial32"
+# res : worked
+Trial32: launch on all 4 profiles on 5 seeds, BRCA-benimetinib
+python SL_prod_local_1.py -t "Trial32" -xproc 38 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataTrial32"
+====> local production is on the go
+=====> checking off shore production
+
+
+> Trial27 : a small (7 samples) first trial in the cluster
+86938
+
++ cmdline for python script : python SL_dev_child_1.py -t "Trial27" -xproc 40 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 2 -cla_profiles_path /home/diouf/ClassHD_work/actual_repo/xgb_basic27_2/PDX__data/processedDataTrial27/BRCA_Treatment17_BestResCat_GEX.csv"
+
+python SL_dev_child_1_mockuplauncher1.py -t "Trial27" -xproc 40 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_seeds 2 -cla_profiles_path "PDX__data/processedDataTrial27"
+
+/home/diouf/ClassHD_work/actual_repo/xgb_basic27_2/PDX__data
+
+> Trial28 : same as Trial27 but in short pazrtition (testing priority overide)
+Submitted batch job 86939
+> tRIAL 29: SAME AS 28 BUT WITH 38CORES and in best partition to try to squeeze it in idle nodes seen over there
+86942
+
+=====> checking off shore production
+> Trial33cnS : contains 4 iterations
+++++test with a small and then with these four
+===> working : ClassHD_launcher_Trial33cn_small is model now for jobs (bo ClassHD_launcher_Trial35 for prod full)
+
+
+++++
+-Trial33cn : jobnames : ClassHD_launcher_Trial33cn ; env : conda activate classhd37_env1
+python SL_prod_Trial33.py -t "Trial33cn" -xproc 40 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataTrial33/processedData.CN"
+-Trail33cna
+python SL_prod_Trial33.py -t "Trial33cna" -xproc 40 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataTrial33/processedData.CNA"
+-Trial33gex
+-Trial33snv
+
+>Trial34 to Trial39 : running on cluster
+==> create the others algs
+==> do one seed with the example for each
+==> tell Pedro all is available
+==> ask Pedro for the synthetic benchmark or (explain to you again what could be done)
+==> executed all algs on the synthetic benchmark
+==> execute each algs on all real data
+
+> Conda env :
+-classhd37_env1 : the env for the prod1
+-classhd37_env2 : create the insert my 2nd alg
+
+
+
+> Trial42 : XGb default params on small dataset
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial42" -xproc 10 -sl "Classif" -ca "XGB_Mark1" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42"
+# works and gives outputs
+# ==> test the params from Stephan for XGB
+> trial43: test the params from Stephan for XGb (Mark2 with no nthread) (same data than trial42)
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial43" -xproc 10 -sl "Classif" -ca "XGB_Mark2nonthread" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42"
+# works and gives outputs
+# ===> implement in the classif_algs module the marks of xgb you want to try and pass to DNNs after
+
+> trial44 : use RF to make a fast run and produce the keep track tables
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial44" -xproc 7 -sl "Classif" -ca "RF_Mark1" -cs "CAB" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42" -cla_reduc_data "y" -cla_reduc_data_sn 7
+# working
+> trial45 : use Rf to make a fast run to check the C-FSB added output (trial45bis is the real test, trial45 is just >=in place of <=)
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial45" -xproc 7 -sl "Classif" -ca "RF_Mark1" -cs "C-FSB" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42" -cla_reduc_data "y" -cla_reduc_data_sn 7
+# works
+> Trial46 : run all classif, 1 seed on 2 types of profiles (there are 2 trial46 , this one is local)
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial46" -xproc 38 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42"
+> Trial[46-61]: RF_Mark2 on 5 seeds on 4 cases
+> Trial52: 1/2 timeout from cluster relaunched on local to complete all RF on 4 cases
+conda activate classhd37_env2
+python SL_prod_offshore_2.py -t "Trial52" -xproc 38 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataTrial52"
+# running on local
+> trial53: 1/2 timeout from cluster relaunched on local to complete all RF on 4 cases
+python SL_prod_offshore_2.py -t "Trial53" -xproc 38 -sl "Classif" -ca "RF_Mark2" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataTrial53"
+> Trial[62-77] : XGB_Mark2nonthread on 5 seeds on 4 cases
+
+>local trial why error is happening on trial 55 and 56:
+il1_folds
+
+Int64Index([1, 2, 3, 4, 5, 6], dtype='int64')
+-run the folds definition of ol2_folds
+-define bench_of_results as col for il1_job
+-define il1_job
+-run this:
+
+for fold in il1_folds:
+	a_tuple_result=il1_job(fold)
+	bench_of_results.append(a_tuple_result)
+# works
+
+>Trial test for round 2 of xgb:
+python SL_prod_offshore_3.py -t "Trial_loc_xgb_round2" -xproc 2 -sl "Classif" -ca "XGB_Mark2nonthread" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.34" -cla_reduc_data "yes" -cla_reduc_data_sn 7
+> Trial_local_DNN1 : test with the folder processesDatatrial42(2 profile of gex and cna) to see if working on all data types
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial_loc_dnn1" -xproc 10 -sl "Classif" -ca "DNN_Mark2" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42" -cla_reduc_data "yes" -cla_reduc_data_sn 7
+
+classifier_introduction(tag_alg,tag_alg_mark, trainframe_x, trainframe_y,aseed,encoded_classes)
+classifier_model_training(model, trainframe_x, trainframe_y)
+classifier_model_prediction(model_fitted, testframe_x, prediction_type)
+classifier_as_Keras_DNN_intro_train_pred(tag_alg_mark,trainframe_x, trainframe_y,featuretype, classif_list_cat_fts,binary_classes_le,testframe_x, prediction_type,aseed)
+Regr_processing_way
+Classif_processing_way
+alg_pw
+
+> Trial loc dnn1 :  on DNN with seq as processing way
+python SL_dev_child_1_mockuplauncher1_local.py -t "Trial_loc_dnn1" -xproc 10 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataTrial42" -cla_reduc_data "yes" -cla_reduc_data_sn 7
+
+> trialpD45 : launched on local but on 38 cores
+python SLATE_test_1_local.py -t "TrialpD45" -xproc 38 -sl "Classif" -ca "DNN_Mark5Vseq" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+
+python SLATE_test_1_local.py -t "TrialpD45_2launch" -xproc 38 -sl "Classif" -ca "DNN_Mark5Vseq" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+
+
+python SLATE_test_1_local.py -t "TrialpD45_testv1_1" -xproc 38 -sl "Classif" -ca "DNN_Mark1Vseq" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+##give as results that xproc works but uses only equivalent of not more than 10 threads. also very variables averages of loss function
+python SLATE_test_1_local.py -t "TrialpD45_testv2_2" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+# to see if 10 cores is sufficient. to see if variations are still happening. keep them like that to find due to noise other locals maximas
+python SLATE_test_1_local.py -t "TrialpD45_testv3_2" -xproc 38 -sl "Classif" -ca "DNN_Mark3Vseq" -cs "Both" -cla_msn 30 -cla_seeds 5 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+# see how verbose 0 give results: 108h for one seed (ie 21 days for all 5 seeds). choice : make just one seed for the dnn
+python SLATE_test_1_local.py -t "TrialpD45_testv4_1_test1" -xproc 38 -sl "Classif" -ca "DNN_Mark4Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+# trying the old xproc route with 1 seed and 10 proc
+# retry it with 1 proc internally if blocking as TrialpD45_testv4_1_test2
+
+python SLATE_test_1_local.py -t "TrialpD45_testv3_8" -xproc 20 -sl "Classif" -ca "DNN_Mark3Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.45"
+# for a seq but like pavel just normal import and displaying prints
+
+# using local to finish runs : case 1 the reals on 2 seeds :
+python SLATE_test_1_local.py -t "TrialpD2526rf" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 2 -cla_profiles_path "PDX__data/processedDataBis/pData.25.26"
+
+
+# last used cmd line for RF
+python SL_prod_offshore_4.py -t "TrialpD31_32rf" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.31.32"
+
+# the algs presented :
+RF_Mark2Vpar
+XGB_Mark2Vpar
+DNN_Mark2Vseq
+SVM_Mark1Vpar for lk
+SVM_Mark2Vpar for rbf
+
+>>> pData25.29 : 5 algs, 10xcv, 1 seed, pancancer case
+-TrialpD25_29rf1s10cv
+python SL_prod_offshore_4.py -t "TrialpD25_29rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29"
+python SL_prod_offshore_4.py -t "TrialpD25_29xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29"
+#======> DONE
+python SL_prod_offshore_4.py -t "TrialpD25_29dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29"
+python SL_prod_offshore_4.py -t "TrialpD25_29svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29"
+python SL_prod_offshore_4.py -t "TrialpD25_29svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29"
+
+
+pData26.30 :
+
+python SL_prod_offshore_4.py -t "TrialpD26_30rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.26.30"
+python SL_prod_offshore_4.py -t "TrialpD26_30xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.26.30"
+python SL_prod_offshore_4.py -t "TrialpD26_30dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.26.30"
+python SL_prod_offshore_4.py -t "TrialpD26_30svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.26.30"
+python SL_prod_offshore_4.py -t "TrialpD26_30svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.26.30"
+
+pData27.31 :
+
+python SL_prod_offshore_4.py -t "TrialpD27_31rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31"
+python SL_prod_offshore_4.py -t "TrialpD27_31xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31"
+python SL_prod_offshore_4.py -t "TrialpD27_31dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31"
+python SL_prod_offshore_4.py -t "TrialpD27_31svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31"
+python SL_prod_offshore_4.py -t "TrialpD27_31svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31"
+
+pData28.32:
+
+python SL_prod_offshore_4.py -t "TrialpD28_32rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.28.32"
+python SL_prod_offshore_4.py -t "TrialpD28_32xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.28.32"
+python SL_prod_offshore_4.py -t "TrialpD28_32dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.28.32"
+python SL_prod_offshore_4.py -t "TrialpD28_32svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.28.32"
+python SL_prod_offshore_4.py -t "TrialpD28_32svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.28.32"
+
+pData25.29.26.30 :
+
+python SL_prod_offshore_4.py -t "TrialpD25_29_26_30rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29.26.30"
+python SL_prod_offshore_4.py -t "TrialpD25_29_26_30xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29.26.30"
+python SL_prod_offshore_4.py -t "TrialpD25_29_26_30dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29.26.30"
+python SL_prod_offshore_4.py -t "TrialpD25_29_26_30svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29.26.30"
+python SL_prod_offshore_4.py -t "TrialpD25_29_26_30svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.25.29.26.30"
+
+pData27.31.28.32 :
+
+python SL_prod_offshore_4.py -t "TrialpD27_31_28_32rf1s10cv" -xproc 38 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31.28.32"
+python SL_prod_offshore_4.py -t "TrialpD27_31_28_32xgb1s10cv" -xproc 38 -sl "Classif" -ca "XGB_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31.28.32"
+python SL_prod_offshore_4.py -t "TrialpD27_31_28_32dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31.28.32"
+python SL_prod_offshore_4.py -t "TrialpD27_31_28_32svmlk1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark1Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31.28.32"
+python SL_prod_offshore_4.py -t "TrialpD27_31_28_32svmrbf1s10cv" -xproc 38 -sl "Classif" -ca "SVM_Mark2Vpar" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27.31.28.32"
+
+a job that blocks launched locally :
+python SL_prod_offshore_4.py -t "TrialpD27dnn1s10cv" -xproc 38 -sl "Classif" -ca "DNN_Mark2Vseq" -cs "Both" -cla_msn 30 -cla_seeds 1 -cla_profiles_path "PDX__data/processedDataBis/pData.27"
+
+# Linh's FS selection in case :
+CRB3, NDUFA1, MPG, ECI1, ING2, KIF9, TSTD1, FAM100A, TCEAL3, HAGH, PEX11G, SNORA72, SNORA70, PIN1
+# Me :
+['CRB3', 'ECI1', 'FAM100A', 'HAGH', 'ING2', 'KIF9', 'MPG', 'NDUFA1', 'PEX11G', 'PIN1', 'SNORA70', 'SNORA72', 'TCEAL3', 'TSTD1']
+
+# model cmd line :
+python SLATE.py -t "Name_of_analysis" -xproc X -sl "SL_task" -ca "Alg_chosen" -cs "study" -cla_seeds num_seeds -cla_profiles_path "path_to_folder_containing_datasets"
+
+Classif_dataset_values_type
+types_of_values_taken_in_charge = ["real", "cat"]
+feature_val_type
+if feature_val_type == "cat" : # case of binary profiles
+if feature_val_type == "real" : # case of reals values profiles
+data_mgmt_5(dframe,index_of_1st_ft,feature_val_type)
+classifier_as_SVM_intro_train_pred(tag_alg_mark,trainframe_x, trainframe_y,feature_val_type,binary_classes_le,testframe_x, prediction_type,aseed)
+#>-----to remove
+# <-----to remove
+Classif_Resp_col_name   # the name of the Response values column
+Classif_Samples_col_name # the name of the Samples names column
+classif_Resp_col_name
+classif_Samples_col_name
+min_complexity_of_tested_MCs
++++++++++
+
+Commands lines
+---> do the reduc and find resp col and samples col auto : (blocking at fts values changing in floats)
+python SLATE.py -t "TestNewDM" -xproc 10 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "slate_data/datasets_to_process_folder/real_val_prof_test" -cla_drugs_path "/home/diouf/ClassHD_work/actual_repo/ClassHD/SLATE_dev_version/slate_data/table_of_treatments_details" -cla_reduc_data "y" -cla_reduc_data_sn 10 -cla_resp_col "BestResCategory" -cla_samples_col "Model" -cla_log "no"
+--> dont do the reduc but find resp col and samples col auto :
+ python SLATE.py -t "TestNewDM" -xproc 10 -sl "Classif" -ca "RF_Mark2Vpar" -cs "Both" -cla_msn 3 -cla_seeds 1 -cla_profiles_path "slate_data/datasets_to_process_folder/real_val_prof_test" -cla_drugs_path "/home/diouf/ClassHD_work/actual_repo/ClassHD/SLATE_dev_version/slate_data/table_of_treatments_details" -cla_resp_col "BestResCategory" -cla_samples_col "Model" -cla_log "yes"
+
+to do list :
+- classifiers stating lines as only algorithms in readme and quick start to modify ftr regresion implementation
+- rfe
+- regression
+- code cleaning
