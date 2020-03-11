@@ -1,3 +1,7 @@
+# =============================== DIFFERENTLY EXPRESSED GENES INQUIRY  ========================================
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 import pandas as pd # for dataframes manipulation
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler # to change the Response values from string to classes 0 and 1 # not needed at the moment
@@ -23,48 +27,120 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 # %matplotlib inline
 
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> Variables to initialise------------------------------------------
+print("Initialising environnement variables...")
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') #for setting the characters format
+# ----for the location of the datasets
+command_center = "Gustave_Roussy"
+# command_center = "Home"
+# ----for the cohort choice
+cohort_used = "REMAGUS02"
+# cohort_used = "REMAGUS04"
+# cohort_used = "MDAnderson"
+# -----for the plots
+SMALL_SIZE = 10
+MEDIUM_SIZE = 12
+plt.rc('font', size=SMALL_SIZE)
+plt.rc('axes', titlesize=MEDIUM_SIZE)
+plt.rc('axes', labelsize=MEDIUM_SIZE)
+plt.rcParams['figure.dpi']=150
+print("All imports and settings are successfully placed")
 
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> README <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+print("Welcome in the formatting tool for the Remagus02 dataset in direction to CICS")
+print("We suppose you have done the querying of a database and you have separated values files (csv,tsv,xls, etc.).")
+print("Such values tables describe samples over multiples features, rows samples and features as columns or vice-versa.")
+print("We will try to format it into this representation : ")
+print("- a .csv file that have succesively 3 groups of columns as features with features names as the titles of the columns")
+print("+ 1 column as the classes and titled BestResCategory ")
+print("+ multiples columns, each one as a feature tityle the feature name")
+print("+ 1 column as the samples and titled Model")
+print("Necessary libraries imported.")
+print("Environnement variables initialised.")
 
-#>>>>>-----start of everything that is data fil specific in the preprocessing
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> RE-ENCODING
+# the file we are given a table with the intent to represent values, each one corresponding to a variable and a sample
+# the vision is one of these 2 representations : variables as columns and rows as samples, or vice-versa
+
+# 1st issue : the file might not be in a supported encoding so we have to reencode it in UTF-8
+
+# file -i REMAGUS02-Données\ genomique_226x54676\ totales.txt
+# iconv -f UTF-16LE -t UTF-8//IGNORE REMAGUS02-Données\ genomique_226x54676\ totales.txt > output2.tsv
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> DATA PREPROCESSING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+print("Storing data files...")
+# stock the file and its separator
+if command_center == "Gustave_Roussy" :
+	file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ GR
+	sep_in_file = "\t"
+	supporting_file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ GR
+	sheet_id = "extractionCNahmias"
+else :  # command_center == "Home"
+	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ home
+	sep_in_file = "\t"
+	supporting_file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ home
+	sheet_id = "extractionCNahmias"
+# --------------proper processing
+print("Preprocessing...")
+# Objective : joining both tables (the one with the features and the one with the response) into one unique table Response-Features-Samples
+#>>>>>-----start of everything that is data file specific in the preprocessing
 if cohort_used == "REMAGUS02" :
 	#make a df out of the file (# ---> how to stock a dataset)
 	df_file = pd.read_csv(file_path,sep_in_file) ##! add skiprows=0 to skip lines 0 lines here, default is None
 	df_sup_file = pd.read_excel(supporting_file_path,sheet_id)
-	# restricting the support info table to only the needed columns
+	# -------step 1 : rename the targeted columns on both columns
+	# we will need to capture columns and move them around or edit them for restricting, joining the columns etc.
+	# it is better to name the manipulated columns and their give also their future names
 	# needed columns : sample col, response col
-	# NB : the 2 samples columns must have different names to join them later
-	old_Samples_col_name_left = "CLETRI" # given cols name by the user ##! both got from the arguments
-	Samples_col_name_left = "Sample_id_bis" # for the left table
-	old_Resp_col_name_left = "RCH"
-	Resp_col_name_left = "Resp_Class" # set cols name by the tool for future dealings
+	old_Samples_col_name_left = "CLETRI" # given samples col name by the user ##! to get from the argument
+	Samples_col_name_left = "Model_bis" # for the left table
+	old_Resp_col_name_left = "RCH" # given resp col name by the user ##! to get from the argument
+	Resp_col_name_left = "BestResCategory"
 	old_Samples_col_name_right = "cletri"
-	Samples_col_name_right = "Sample_id" # for the right table
+	# NB : the 2 samples columns of the 2 tables must have different names to join them later
+	Samples_col_name_right = "Model" # for the right table
 	common_samples_id_prefix = "CLETRI"
-	# Objective : joining both tables (the one with the features and the one with the response)
-	# -----> put in form the content of each table
-
-	# - put in form the content of response table (LEFT)
+	# -----> put in form the content of response table (LEFT)
+	# -------step 2 : restricting the support info table to only the needed columns # strategy : selected only the needed columns because they are not a lot
 	df_sup_file = df_sup_file[[old_Samples_col_name_left,old_Resp_col_name_left]]
+	# -------step 3 : rename the 2 kept columns for the left table
+	# 1 - change the 2 cols names
 	df_sup_file.rename(columns={old_Samples_col_name_left: Samples_col_name_left, old_Resp_col_name_left : Resp_col_name_left}, inplace=True)
-	df_sup_file.dropna(axis='index', inplace=True) # lets make sure the load out going to the left is without nan
+	# 2 - rename the samples id for future rememberance of what was the id by adding the nature of the id as a prefix in capital letters
 	df_sup_file[Samples_col_name_left] = common_samples_id_prefix + "_" + df_sup_file[Samples_col_name_left].astype(str) # sample_name is a string ColumnName_IdInColumn
-	# df_sup_file[Resp_col_name_left] = df_sup_file[Resp_col_name_left].astype(int) ##! remove bcuz not needed, iz done later on after the join
+	# -------step 4 : eliminate all samples unidentified or without response (with nan values) also a way to make sure the joining with the right table later goes smootly
+	samples_b4_cleaning = len(df_sup_file.axes[0])
+	df_sup_file.dropna(axis='index', inplace=True)
+	samples_aft_cleaning = len(df_sup_file.axes[0])
+	lost_samples = samples_b4_cleaning - samples_aft_cleaning
+	print("Report on the losses during the cleaning of the uncomplete samples info of the left table : ") # a report on the losses while cleaning
+	if lost_samples==0:
+		print("No samples has been lost during the cleaning of the uncomplete samples info of the left table")
+	else:
+		print(lost_samples,"samples has been lost during the cleaning of the uncomplete samples info of the left table")
 
-	# - put in form the content of features table (RIGHT)
-	df_file = df_file.transpose() # changes columns into rows
-	# make the index (presently being the sample names) as an index
-	df_file = df_file.reset_index() # reset the index in a way to get the older index as a column
-	df_file.columns = df_file.iloc[0] # take the first line and use it as titles of the columns
-	df_file = df_file.drop(df_file.index[0]) # drop the first line because it is now the titles of the columns
-	df_file = df_file.reset_index(drop=True) # the index is missing now a the 1st line and is starting by 1 instead of 0. reset it in a way to not get a new column
-	# dropping columns that are not necessary
+
+	# -----> put in form the content of features table (RIGHT)
+    # -------step 5 : # changes columns into rows because the rows are not the samples
+	df_file = df_file.transpose()
+	# -------step 6 : # make the index (presently being the sample names) as a column (by resetting the index in a way to get the older index as a column)
+	df_file = df_file.reset_index()
+    # -------step 7 : # take the first line and use it as titles of the columns
+	df_file.columns = df_file.iloc[0]
+    # -------step 8 : # drop the first line because it is now the titles of the columns
+	df_file = df_file.drop(df_file.index[0])
+    # -------step 9 : # the index is missing now a the 1st line and is starting by 1 instead of 0. reset it in a way to not get a new column
+	df_file = df_file.reset_index(drop=True)
+	# -------step 10 : restricting the features info table to only the needed columns # strategy : dropping columns that are not necessary because they are not a lot
 	list_of_unecessary_cols_2_drop = ["CLETRI"]
 	df_file.drop(labels=list_of_unecessary_cols_2_drop, axis=1, inplace=True) # dropping a column that is just a repetiton of the sample names col
-	# renaming the sample column
+	# -------step 11 : # renaming the sample column
+    # 1 - change the 2 cols names
 	df_file.rename(columns={old_Samples_col_name_right: Samples_col_name_right}, inplace=True)
+    # 2 - rename the samples id for future rememberance of what was the id by adding the nature of the id as a prefix in capital letters
 	df_file[Samples_col_name_right] = common_samples_id_prefix + "_" + df_file[Samples_col_name_right].astype(str) # sample_name is a string ColumnName_IdInColumn
 
-	# - time for the joining of the features and responses table (joined on the sample name columns)
+	# -------step 12 : joining of the features and responses table (joined on the sample name columns)
 	df_joined = pd.merge(df_sup_file, df_file, how="inner", left_on=Samples_col_name_left, right_on=Samples_col_name_right)
 elif cohort_used == "REMAGUS04" :
 	print("dataset treatment to add")
@@ -74,21 +150,33 @@ else :
 	print("no dataset known added for treatment")
 #<<<<<<<----end of all that is data file specific about the preprocessing
 
-# >>>>>---------formatting every group of columns in the final frame
+# >>>>>-----formatting every group of columns in the final frame for the content of the csv response-features-samples files
 # the awaited configuration is :
-# - 1 column of dtype object (samples names)
 # - 1 column that can have anything as dtype (the response) and that is why we encode it
 # - and a bunch that is int64/float64/object but the one and the same type that we previously formatted in bools or floats
+# - 1 column of dtype object (samples names)
 
-# dropping the extra sample column
+
+# -------step 13 : dropping the extra sample columnfound after the joining of left and right tables
 df_joined.drop(labels=[Samples_col_name_left], axis=1, inplace=True)
 del df_file # clear memory
 del df_sup_file # clear memory
-# store the resp col that is last, drop it from the df and then insert it again at the 2nd position of the df
+# -------step 14 : store the resp col that is last, drop it from the df and then insert it again at the 1st position of the df
 Resp_col_to_move = df_joined[Resp_col_name_left]
 df_joined.drop(labels=[Resp_col_name_left], axis=1, inplace=True)
-df_joined.insert(1, Resp_col_name_left, Resp_col_to_move)
+df_joined.insert(0, Resp_col_name_left, Resp_col_to_move)
 del Resp_col_to_move # clear memory
+# -------step 15 : if decided by user, put the sammples col at last position (not impacting the CICS preprocessing)
+# strategy : move around the col names and use the new list to build new dataframe
+tag_decision_move_samples_col_at_last_pos = "yes"
+# tag_decision_move_samples_col_at_last_pos = "no"
+if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]:
+    df_joined_initial_cols_list = list(df_joined.columns)
+    df_joined_cols_reordered_list = [df_joined_initial_cols_list[0]] + df_joined_initial_cols_list[2:] + [df_joined_initial_cols_list[1]]
+    df_joined = df_joined[df_joined_cols_reordered_list]
+
+
+
 # drop all rows with nan (in R02, b4 : 221x54677 aft : 221x54677)
 # df_joined = df_joined.dropna(axis='index') # less efficient
 df_joined.dropna(axis='index',inplace = True) ##! choose if you lose samples or fts

@@ -1,3 +1,13 @@
+# =============================== DIFFERENTLY EXPRESSED GENES INQUIRY  ========================================
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> README <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+print("Welcome in Case Implicated Candidates Search (CICS)")
+print("We suppose you have done the querying of the database and you have separated values files (csv,tsv,etc.).")
+print("Such values tables describe samples over multiples features, rows samples and features as columns or vice-versa.")
+print("We will try to realise a search of the features that are differently varying following a response.")
+print("Such features are the candidates we search for...")
+print("Importing necessary libraries...")
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 import pandas as pd # for dataframes manipulation
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler # to change the Response values from string to classes 0 and 1 # not needed at the moment
@@ -23,7 +33,45 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 # %matplotlib inline
 
+# ---------------------Variables to initialise------------------------------------------
+print("Initialising environnement variables...")
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') #for setting the characters format
+# ----for the location of the datasets
+# command_center = "Gustave_Roussy"
+command_center = "Home"
+# ----for the cohort choice
+cohort_used = "REMAGUS02"
+# cohort_used = "REMAGUS04"
+# cohort_used = "MDAnderson"
+# -----for the plots
+SMALL_SIZE = 10
+MEDIUM_SIZE = 12
+plt.rc('font', size=SMALL_SIZE)
+plt.rc('axes', titlesize=MEDIUM_SIZE)
+plt.rc('axes', labelsize=MEDIUM_SIZE)
+plt.rcParams['figure.dpi']=150
+print("All imports and settings are successfully placed")
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> DATA PREPROCESSING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+print("Preprocessing...")
+# the file we are given a table with the intent to represent values, each one corresponding to a variable and a sample
+# the vision is one of these 2 representations : variables as columns and rows as samples, or vice-versa
 
+# 1st issue : the file might not be in a supported encoding so we have to reencode it in UTF-8
+
+# file -i REMAGUS02-Données\ genomique_226x54676\ totales.txt
+# iconv -f UTF-16LE -t UTF-8//IGNORE REMAGUS02-Données\ genomique_226x54676\ totales.txt > output2.tsv
+
+# stock the file and its separator
+if command_center == "Gustave_Roussy" :
+	file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ GR
+	sep_in_file = "\t"
+	supporting_file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ GR
+	sheet_id = "extractionCNahmias"
+else :  # command_center == "Home"
+	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ home
+	sep_in_file = "\t"
+	supporting_file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ home
+	sheet_id = "extractionCNahmias"
 
 #>>>>>-----start of everything that is data fil specific in the preprocessing
 if cohort_used == "REMAGUS02" :

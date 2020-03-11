@@ -42,15 +42,22 @@ locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') # for setting the characters form
 # add here a section to fixated shebang style
 warnings.filterwarnings("ignore") #for the behaviour of the warnings alerts
 globalstart = timer_started() # start a clock to get the time after all the analysis
-### -------------FIXATED VARIABLES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+### -------------FIXATED VARIABLES
 basedir = str(Path()) #for setting the working directory
 # NB : the output filename can have appointed tags to identify easier the analysis it reports on (done throughout the script and can be foung with commented "# tag caught")
+# ----for the location of the default datasets
+command_center = "Gustave_Roussy"
+# command_center = "Home"
+# ----for the cohort choice
+cohort_used = "REMAGUS02"
+# cohort_used = "REMAGUS04"
+# cohort_used = "MDAnderson"
+# cohort_used = "PDX_BRCA_T17_GEX"
 #-----VARIABLES USED ACCROSS THE SCRIPT FOR REGRESSION
 # min_cons_corr = -2000 # minimum conserved correlation ie for the prediction to be conserved # usaually 0.25
 #-------STRATEGIES USED ACROSS THE SCRIPT
 # tags will be taken in checkpoints throughout the script in order to keep away small info bits necessary in results descriptions (titles of figures, output filenames)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF ENVIRONNEMENT DEFINITIONS
-
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>VARIABLES INITALISATION 1/n : SETTING UP COMMAND LINE ARGUMENTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 our_args_parser = argparse.ArgumentParser(prog='CICS',description="Welcome in CICS - Case Implicated Candidates Search.", epilog="Thank you for using CICS. Questions and contributions are waited at amaddioufb13@gmail.com.")
@@ -109,14 +116,34 @@ our_args_parser.add_argument("-cla_pw","--Classif_processing_way", choices=pw__i
 our_args_parser.add_argument("-reg_pw","--Regr_processing_way", choices=pw__implemented, type=str, default="native", help="(str choice) (default is pw) in regression operations, the type of processing way to execute for multiple jobs with the same algorithm (parallel or sequential). The chosen processing way will be run instead if different from the one preferentiably implemented for chosen regressor")
 #------> Paths to data sources
 # Input data files are available in the "./CICS/.../datasets_to_process_folder/" & "./CICS/.../table_of_treatments_details/" directories as csv files.
-# lets define their locations if not given as arguments.
-
-### default folders to use as arguments option if nothing is given by user
-# data_profiles_path = "/home/diouf/ClassHD_work/actual_repo/ClassHD/CICS_dev_version/slate_data/datasets_to_process_folder/real_val_prof_test" # the profiles data #old
-# data_drugs_path = "/home/diouf/ClassHD_work/actual_repo/ClassHD/CICS_dev_version/slate_data/table_of_treatments_details" # the drugs data # old
-
-data_profiles_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/SLATE/SLATE_dev_version/slate_data/datasets_to_process_folder/real_val_prof_test" # the profiles data
-data_drugs_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/SLATE/SLATE_dev_version/slate_data/table_of_treatments_details" # the drugs data
+# lets define location of default folders to use as arguments option if nothing is given by user
+# stock the file and its separator
+if command_center == "Gustave_Roussy" : # @ GR
+	if cohort_used == "REMAGUS02" : # for remagus_02
+		data_profiles_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R02"# the profile(s) data
+		data_drugs_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/table_of_treatments_details" # the drugs details data
+	if cohort_used == "REMAGUS04" : # for remagus_04
+		data_profiles_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R04"
+		data_drugs_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+	if cohort_used == "MDAnderson" : # for remagus_04
+		data_profiles_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/MDA"
+		data_drugs_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+	else : # cohort_used = "PDX_BRCA_T17_GEX"
+		data_profiles_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/slate_data/datasets_to_process_folder/real_val_prof_test"
+		data_drugs_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+else :  # command_center == "Home"
+	if cohort_used == "REMAGUS02" : # for remagus_02
+		data_profiles_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R02"
+		data_drugs_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+	if cohort_used == "REMAGUS04" : # for remagus_04
+		data_profiles_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R04"
+		data_drugs_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+	if cohort_used == "MDAnderson" : # for remagus_04
+		data_profiles_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/MDA"
+		data_drugs_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
+	else : # cohort_used = "PDX_BRCA_T17_GEX"
+		data_profiles_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/slate_data/datasets_to_process_folder/real_val_prof_test"
+		data_drugs_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/table_of_treatments_details"
 
 ### Paths to capture from what is given by a user (previously was using type=lambda d: Path(d).absolute() changed to type=Path to force user to give full path of folders)
 our_args_parser.add_argument("-cla_drugs_path","--Classif_drugs_folder", type=Path, default=data_drugs_path, help="(path) (default is PDX test data) for classification, path to the drugs data (in quotes, a path, starting by a folder located in cwd, ending by the name of the folder containing all profiles files to analyse)")
@@ -211,49 +238,58 @@ if our_args.Classif_cross_validation_folds_number < 2 :
 if our_args.Regr_cross_validation_folds_number < 2 :
 	our_args_parser.error('in regression operations, if if the default 10XCV has to be changed, the int given has to be superior or equal to 2.')
 
-############## storing the given values by the user...
-##! last_stop
-
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>DESCRIPTION OF THE ANALYSIS BEFORE IT STARTS
-# - Describing the analysis ordered with options supplied to arguments...
-
+############## storing the given values by the user...1/2
 # Name of the trial that will be run
 tag_num_trial = our_args.Trial_number # "Trial14" was the last # tag_num_trial = "Trial_test" for testing # tag caught
 # number of logical cores used CPU-wise
 tag_num_xproc = our_args.Multiprocessing_cores # capture # tag_num_xproc = 10 for testing or tag_num_xproc = 1 # tag caught
+# a list of the tasks requested by the user # tag caught
+tag_tasks_to_perform = our_args.SL_tasks_to_perform
+# a string saying if to make a log or not # tag caught
+tag_decision_make_log = our_args.Classif_make_log
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>REDIRECTION OF STDOUT TO .o FILE OR NOT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-classif_decision_make_log = our_args.Classif_make_log # tag caught
-if classif_decision_make_log in ["yes", "y"]:
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>REDIRECTION OF STDOUT TO .o FILE OR NOT 1/2<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# A log file name Output_following_trialNameGivenByUser.0 is created
+if tag_decision_make_log in ["yes", "y"]:
 	original_out = sys.stdout
 	sys.stdout = open(basedir + "/" + "outputs" + "/" + "Output_following_" + tag_num_trial + ".o", 'w')
-
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-###...and describe the analysis built
-print('This is the file following the course of the run:')
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>DESCRIPTION OF THE ANALYSIS REQUESTED BEFORE IT STARTS
+# - Describing the analysis ordered with options supplied to arguments...
+print("Welcome in Case Implicated Candidates Search (CICS)")
+if tag_decision_make_log in ["no", "n"]:
+	print("a log file has not been created. Analysis is to be followed on this standard output.")
+else:
+	print('This is the log file following the course of the analysis:')
+print("We suppose you have done the querying of the database and you have separated values files (csv,tsv,etc.).")
+print("Such values tables describe samples over multiples features, rows samples and features as columns or vice-versa.")
+print("We will try to realise a search of the features that are differently varying following a response.")
+print("Such features are the candidates we search for...")
+print("Necessary libraries imported.")
+print("Environnement variables initialised.")
+print("User supplied values to arguments will be exploited in relevant tasks")
 print("This analysis is named : " + tag_num_trial + " and is supported by " + str(tag_num_xproc) + " cores")
-print("It will carry out these SL tasks : {}.".format(', '.join(our_args.SL_tasks_to_perform))) #tag will be caught when entering classif or regr operations
-if ("Classif" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to_perform) :
+print("It will carry out these SL tasks : {}.".format(', '.join(tag_tasks_to_perform))) #tag will be caught when entering classif or regr operations
+if ("Classif" in tag_tasks_to_perform) | ("Both" in tag_tasks_to_perform) :
 	print("For the classification task, each of these algorithms will be tested : {}".format(', '.join(our_args.Classif_algs)))  #{}".format(', '.join(str(v) for v in our_args.Classif_algs)))
 	print("...For those classification algorithms, the studies requested are : {}".format(', '.join(our_args.Classif_studies)))  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
 	print("...Each of those classification studies will be run on {} seeds.".format(our_args.Classif_seeds_values))  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
 	print("...and the OMC search to carry out is : ", our_args.Classif_OMC_search_type_to_perform)  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
-elif ("Regr" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to_perform) :
+elif ("Regr" in tag_tasks_to_perform) | ("Both" in tag_tasks_to_perform) :
 	print("For the regression task, each of these algorithms will be tested : {}".format(', '.join(our_args.Regr_algs)))  # our_args.Regr_algs is None so use a none exception to manage it later (do a regression or not)
 	print("...For those regression algorithms, the studies requested are : {}".format(', '.join(our_args.Regr_studies)))  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
 	print("...Each of those regression studies will be run on {} seeds.".format(our_args.Regr_seeds_value))  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
 	print("...and the OMC search to carry out is : ", our_args.Regr_OMC_search_type_to_perform)  # {}".format(', '.join(str(v) for v in our_args.Classif_algs)))
-##!! pursue the decription later on
+##! pursue the decription later on
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>CLASSIFICATION OPERATIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 print(bcolors.OKGREEN + "Engaging Classification task of the analysis named "+tag_num_trial+"..." + bcolors.ENDC)
-before_all_classif_ops_timer_start = timer_started() ##!! start a timer here for all classif_algs that will be ran
-if ("Classif" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to_perform) :
-	##!! start a timer here for all classif part that will be ran
+before_all_classif_ops_timer_start = timer_started() # start a timer here for all the classif part that will be ran
+if ("Classif" in tag_tasks_to_perform) | ("Both" in tag_tasks_to_perform) :
+	# storing the (related) given values by the user...2/2
 	tag_task_type = "Classif" ##tag caught
 	classif_seeds = list(range(our_args.Classif_seeds_values)) # for the classification operations, get the seeds list to use # classif_seeds = list(range(2)) for testing or classif_seeds = list(range(1))
 	classif_msn = our_args.Classif_MSN # for the classification operations, get the the minimal samples number # classif_msn = 3 for testing
@@ -1459,19 +1495,22 @@ if ("Classif" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to
 runtime_classif_part = duration_from(before_all_classif_ops_timer_start)
 print(bcolors.OKGREEN + " Classification part of (" + tag_num_trial + ") done: Time taken : ", runtime_classif_part, bcolors.ENDC)
 
-# uncomment to access the regression part ##!! just imitate the classification part and change the metrics used
+##! uncomment to access the regression part
+##! just imitate the classification part and change the metrics used
 # #>>>>>>>>>>>>>>>>>>>>>>>>>>> REGRESSION OPERATIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # print(bcolors.OKGREEN + "Engaging Regression task of the analysis named "+tag_num_trial+"..." + bcolors.ENDC)
-# if ("Regr" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to_perform) :
-#===================paste classification code here and modify================================================
-# # end of all regression operations
-# #wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+# if ("Regr" in tag_tasks_to_perform) | ("Both" in tag_tasks_to_perform) :
+##! paste classification code here and modify==================long code==============================
+# end of all regression operations #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # all the analysis is done : get the runtime
 runtime_analysis = duration_from(globalstart)
 print(bcolors.OKGREEN + " Analysis (" + tag_num_trial + ") done : Time taken is : ", runtime_analysis, bcolors.ENDC)
-# concatenate end with "," instead of "+" to avoid TypeError: unsupported operand type(s) for +: 'datetime.timedelta' and 'str'
+# end concatenated with "," instead of "+" to avoid TypeError: unsupported operand type(s) for +: 'datetime.timedelta' and 'str'
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>REDIRECTION OF STDOUT TO .o FILE OR NOT 2/2<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # stop redirection of stdout if it was being done #!! update this condittion with regression log redirection when regression implemented
-if classif_decision_make_log in ["yes", "y"]:
+if tag_decision_make_log in ["yes", "y"]:
 	sys.stdout = original_out
-# this is the dev file
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# this was the dev file
