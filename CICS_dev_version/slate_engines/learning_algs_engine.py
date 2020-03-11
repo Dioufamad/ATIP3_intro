@@ -58,7 +58,7 @@ from sklearn.feature_selection import RFE # in test for RFE implementation
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') #for setting the characters format
 #====================================================================
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>functions for proper Classification algorithms
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FUNCTIONS FOR PROPER CLASSIFICATION ALGORITHMS
 # -------------------------------here is the stock steps for a machine learning algorithm use code until prediction
 # def classifier_introduction(classifier_version,num_cores,aseed):
 # 	if classifier_version == "XGBoost_C_1" :
@@ -393,6 +393,16 @@ def classifier_as_Keras_DNN_intro_train_pred(tag_alg_mark,trainframe_x, trainfra
 	# testing this
 
 	return model_prediction
+#-----A function to round all the name tags to make them available to the user in the launcher
+def classif_algs_roundup():
+	RF_marks = ["RF_Mark1Vpar","RF_Mark2Vpar","RF_Mark3Vpar","RF_Mark4Vpar"] # best = RF_Mark2Vpar
+	XGB_marks = ["XGB_Mark1Vpar","XGB_Mark2Vseq","XGB_Mark2Vpar"] # best = XGB_Mark2Vpar
+	# GBM_marks = ["GBM_Mark1Vpar"]
+	DNN_marks = ["DNN_Mark1Vseq","DNN_Mark2Vseq","DNN_Mark3Vseq","DNN_Mark4Vseq"] # best = DNN_Mark2Vseq
+	SVM_marks = ["SVM_Mark1Vpar","SVM_Mark2Vpar"] # best = SVM_Mark1Vpar for lk and SVM_Mark2Vpar for rbf
+	classif_algs_implemented = RF_marks+XGB_marks+DNN_marks+SVM_marks
+	return classif_algs_implemented
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF FUNCTIONS FOR PROPER CLASSIFICATION ALGORITHMS
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>helper functions for classifiers
 def prediction_calling(prediction_array,prediction_call_col,thres,encoded_classes,initial_seed_value):
@@ -469,8 +479,15 @@ def multi_models_called_predictions_pusher_to_df(prediction_call_col_mdl1,predic
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>functions for proper Regression algorithms
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FUNCTIONS FOR PROPER REGRESSION ALGORITHMS
 
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+#-----A function to round all the name tags to make them available to the user in the launcher
+def regr_algs_roundup():
+	RF_marks = ["RF_Mark1_par","RF_Mark2_par","RF_Mark3_par","RF_Mark4_par"] # best = to be decided
+	##! add here the other regressin algs
+	regr_algs_implemented = RF_marks
+	return regr_algs_implemented
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF FUNCTIONS FOR PROPER REGRESSION ALGORITHMS
 
 

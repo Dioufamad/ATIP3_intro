@@ -1,5 +1,7 @@
 # =============================== CICS - Case Implicated Candidates Search ========================================
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>IMPORTS FOR CLASSIFICATION TASK<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>IMPORTS
+#----IMPORTS FOR A CLASSIFICATION TASK
 import locale
 import numpy as np # linear algebra and exploit arrays faster and easier computations
 import sys # to make all stdout display go to a log file (our .o in the results batch of files)
@@ -7,59 +9,62 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import warnings
 from slate_engines.data_engine1_mgmt import data_mgmt_1,data_mgmt_2,data_mgmt_6,unifier_creator,data_loadout_right_corresponder,data_mgmt_5,feature_values_type_caracterisation,reduction_of_dataset_for_testing_purpose
 from slate_engines.data_engine2_allocation import add_entry_in_dict,il1_multiprocessing_handler,il1_sequential_processing_handler,stratKfolds_making
-from slate_engines.Classif_algs_engine import classifier_introduction,classifier_model_training,classifier_model_prediction,classifier_as_Keras_DNN_intro_train_pred,classifier_as_SVM_intro_train_pred # all for RF ML alg choice using tag_name, training and prediction
-from slate_engines.Classif_algs_engine import prediction_calling,raw_predictions_pusher,called_predictions_pusher # for predictions treatments
-# from slate_engines.Classif_algs_engine import ## to copy and use to separate here the others functions for any another classifier
+from slate_engines.learning_algs_engine import classifier_introduction,classifier_model_training,classifier_model_prediction,classifier_as_Keras_DNN_intro_train_pred,classifier_as_SVM_intro_train_pred # all for RF ML alg choice using tag_name, training and prediction
+from slate_engines.learning_algs_engine import classif_algs_roundup
+from slate_engines.learning_algs_engine import prediction_calling,raw_predictions_pusher,called_predictions_pusher # for predictions treatments
 from slate_engines.metrics_engine import calculate_mcc_w_storing,pd_ml_classif_report_on_cm_binary
 from slate_engines.watcher_engine import timer_started,duration_from,bcolors,roc_curve_updater_after_one_iteration_of_the_mdl,roc_curve_finisher_after_all_iterations_of_the_mdl,average_roc_curve_init,average_roc_curve_finisher,df_of_results_for_metrics_one_mdl_creator,df_of_results_for_metrics_all_mdls_creator,df_of_results_for_FS_one_mdl_creator
 from slate_engines.fs_engine import ranker_by_pval_v2,OMC_founder_in_dict_MCs_MCCs
 from multiprocessing import cpu_count, current_process # 1st is for the num_cores acquisition, 2nd is for telling a process who carried-out a job
 import matplotlib.pyplot as plt # used to make plots # for roc curves
 from uncertainties import ufloat # to write the mean auc accross seeds with the incertainty in one cell and correctly
-# from functools import reduce # reduce fonctions to obtain persistent list in list of lists # only in python3 has it been here #unused in lmatest versions of the tool
+# from functools import reduce # reduce fonctions to obtain persistent list in list of lists # only in python3 has it been here # unused in latest versions of the tool
 import argparse #to manage the arguments of the script
 from pathlib import Path # to manage paths as into arguments
 from sklearn.preprocessing import LabelEncoder # to change the Response values from string to classes 0 and 1 # not needed at the moment
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>IMPORTS FOR REGRESSION TASK OR NOT NEEDED<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#----ADDITIONAL IMPORTS FOR A REGRESSION TASK
 # from slate_engines.data_engine1_mgmt import data_mgmt_3
 # import random
 # from slate_engines.data_engine2_allocation import testset_indexes_spacer,testset_indexes_selector, trainingset_indexes_selector, set_creator_w_rows_index
 # from slate_engines.Classif_algs_engine import classifier_introduction,classifier_model_training,classifier_model_prediction,classifier_introduction2,classifier_model_training2,classifier_model_prediction2,classifier_introduction2_dflt0 #1 XGBoost_C_1 #2 RF_dflt1 # RF intro dflt0
+from slate_engines.learning_algs_engine import regr_algs_roundup
 # from slate_engines.fs_engine import length_features_list,maximal_complexity_as_half_tr,list_of_complexities_ext,list_of_complexities_ltd,stratification1,feat_selection1
 # from slate_engines.metrics_engine import r2,rmse,spearmanr_test,spearmanr_test_dec,r2_dec,rmse_dec,restriction_of_MCCs_wide,df_multiplier_in_rows
 # from slate_engines.fs_engine import eliminate_non_variable_fts
 # from random import shuffle
-#-------------------------------END OF IMPORTS-----------------------------------------
-#-----> Variables used accross the script for regression
-# cv_standard = 5  #for K-fold cross-validation
-# testset_size = 10 # size of the test set
-# min_cons_corr = -2000 # minimum conserved correlation ie for the prediction to be conserved # usaually 0.25
-# num_cores = 30 #for the Number of cores used in some classfiers like xgboost
-#----->
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>ENVIRONNEMENT DEFINITIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# exploit this space for hard coding variables if necessary
+# ------PROPER ENVIRONMENT
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') # for setting the characters format
 # add here a section to fixated shebang style
 warnings.filterwarnings("ignore") #for the behaviour of the warnings alerts
 globalstart = timer_started() # start a clock to get the time after all the analysis
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+### -------------FIXATED VARIABLES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+basedir = str(Path()) #for setting the working directory
+# NB : the output filename can have appointed tags to identify easier the analysis it reports on (done throughout the script and can be foung with commented "# tag caught")
+#-----VARIABLES USED ACCROSS THE SCRIPT FOR REGRESSION
+# min_cons_corr = -2000 # minimum conserved correlation ie for the prediction to be conserved # usaually 0.25
+#-------STRATEGIES USED ACROSS THE SCRIPT
+# tags will be taken in checkpoints throughout the script in order to keep away small info bits necessary in results descriptions (titles of figures, output filenames)
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF ENVIRONNEMENT DEFINITIONS
 
-### >>>>>>>>>>>>>>>>>>>>>>>>>>>VARIABLES INITALISATION 1/2 : ARGUMENTS MANAGEMENTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-our_args_parser = argparse.ArgumentParser(prog='ClassHD',description="Welcome in the Classification benchmark on HD data.", epilog="Thank you and adress for contributions")
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>VARIABLES INITALISATION 1/n : SETTING UP COMMAND LINE ARGUMENTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+our_args_parser = argparse.ArgumentParser(prog='CICS',description="Welcome in CICS - Case Implicated Candidates Search.", epilog="Thank you for using CICS. Questions and contributions are waited at amaddioufb13@gmail.com.")
 ################### creating grouped args....
 # group = our_args_parser.add_mutually_exclusive_group() ##!! customise and use later for what to show and what to retain
 # group.add_argument("-v", "--verbose", action="store_true")
 # group.add_argument("-q", "--quiet", action="store_true")
-################## creating args....
+################## creating standalone args....
 #-----> The present version of the tool
-our_args_parser.add_argument("-v",'--version', action='version', version='%(prog)s 2.0')
+our_args_parser.add_argument("-v",'--version', action='version', version='%(prog)s 1.0.0')
 #-----> Name the analysis
 our_args_parser.add_argument("-t","--Trial_number", type=str, help="(str) name given to the analysis that will be ran", required=True) # default action is action=store
 #-----> Number of cores to use in case of multiprocessing (geared towards the loops)
-max_cores_minus2 = (cpu_count() - 2) # leave 2 cores to work on the side # use 10 for tests
-# max_cores = cpu_count() # full usage
+max_cores_minus2 = (cpu_count() - 2) # leave 2 cores to work on the side # use 10 for tests # never set up as max_cores = cpu_count(), full usage number has to be exploited oly when given by informed user
 our_args_parser.add_argument("-xproc","--Multiprocessing_cores", type=int, default=max_cores_minus2, help="(int) (default is max_cores_minus2) Number of cores to use in case of multiprocessing") # default action is action=store # required=True is taken off to be able to use default value
 #-----> Super Learning Task(s) Type choice:
 our_args_parser.add_argument("-sl","--SL_tasks_to_perform", choices=["Classif", "Regr", "Both"], nargs='+',help="(str choice) the types of supervised learning algorithms to performs",required=True) # required=True if not default='Classif'
@@ -69,9 +74,9 @@ XGB_marks = ["XGB_Mark1Vpar","XGB_Mark2Vseq","XGB_Mark2Vpar"] # best = XGB_Mark2
 # GBM_marks = ["GBM_Mark1Vpar"]
 DNN_marks = ["DNN_Mark1Vseq","DNN_Mark2Vseq","DNN_Mark3Vseq","DNN_Mark4Vseq"] # best = DNN_Mark2Vseq
 SVM_marks = ["SVM_Mark1Vpar","SVM_Mark2Vpar"] # best = SVM_Mark1Vpar for lk and SVM_Mark2Vpar for rbf
-classif_algs_implemented = RF_marks+XGB_marks+DNN_marks+SVM_marks
+classif_algs_implemented = classif_algs_roundup()
 our_args_parser.add_argument("-ca","--Classif_algs", choices=classif_algs_implemented, nargs='+', help="(str choice) the classification algorithm to use if classification has to be carried out") # required=True if not by default Classif # using action=append regroup all the entry(a list already) and add it to a list (so we get a list of a list) so better leave like this
-regr_algs_implemented = ["RF_Mark1_par","RF_Mark2_par","RF_Mark3_par","RF_Mark4_par"]
+regr_algs_implemented = regr_algs_roundup()
 our_args_parser.add_argument("-ra","--Regr_algs", choices=regr_algs_implemented, nargs='+', help="(str choice) the regression algorithm to use if regression has to be carried out")
 #-----> Study(ies) to carry out choices :
 classif_studies_to_carry_out = ["CAB","C-FSB","Both"]
@@ -103,9 +108,10 @@ pw__implemented = ["par", "seq"] # MC = optimal model complexity
 our_args_parser.add_argument("-cla_pw","--Classif_processing_way", choices=pw__implemented, type=str, default="native", help="(str choice) (default is pw) in classification operations, the type of processing way to execute for multiple jobs with the same algorithm (parallel or sequential). The chosen processing way will be run instead if different from the one preferentiably implemented for chosen classifier")
 our_args_parser.add_argument("-reg_pw","--Regr_processing_way", choices=pw__implemented, type=str, default="native", help="(str choice) (default is pw) in regression operations, the type of processing way to execute for multiple jobs with the same algorithm (parallel or sequential). The chosen processing way will be run instead if different from the one preferentiably implemented for chosen regressor")
 #------> Paths to data sources
-# Input data files are available in the "./PDX__data/" & "./inp/" directories. lets define their locations if not given as arguments.
-# Any results is written in the "./outputs/" directory.
-### default folders to use as arguments option if nothing if given by user
+# Input data files are available in the "./CICS/.../datasets_to_process_folder/" & "./CICS/.../table_of_treatments_details/" directories as csv files.
+# lets define their locations if not given as arguments.
+
+### default folders to use as arguments option if nothing is given by user
 # data_profiles_path = "/home/diouf/ClassHD_work/actual_repo/ClassHD/CICS_dev_version/slate_data/datasets_to_process_folder/real_val_prof_test" # the profiles data #old
 # data_drugs_path = "/home/diouf/ClassHD_work/actual_repo/ClassHD/CICS_dev_version/slate_data/table_of_treatments_details" # the drugs data # old
 
@@ -117,6 +123,8 @@ our_args_parser.add_argument("-cla_drugs_path","--Classif_drugs_folder", type=Pa
 our_args_parser.add_argument("-cla_profiles_path","--Classif_profiles_folder", type=Path, default=data_profiles_path, help="(path) (default is PDX test data) for classification, path to the profiles data (in quotes, a path, starting by a folder located in cwd, ending by the name of the folder containing all profiles files to analyse)")
 our_args_parser.add_argument("-reg_drugs_path","--Regr_drugs_folder", type=Path, default=data_drugs_path, help="(path) (default is PDX test data) for regression, path to the drugs data (in quotes, a path, starting by a folder located in cwd, ending by the name of the folder containing all profiles files to analyse)")
 our_args_parser.add_argument("-reg_profiles_path","--Regr_profiles_folder", type=Path, default=data_profiles_path, help="(path) (default is PDX test data) for regression, path to the profiles data (in quotes, a path, starting by a folder located in cwd, ending by the name of the folder containing all profiles files to analyse)")
+#------> Paths to analysis output
+# Any results is written in the "./outputs/" directory.
 #------> The column names for the response column and the samples column in order to localise no matter their position if they are not already put in the positions required
 our_args_parser.add_argument("-cla_resp_col","--Classif_Resp_col_name", type=str, default="BestResCategory", help="(str) (default is BestResCategory) the name of the Response values column. To be given if different from default") # default action is action=store
 our_args_parser.add_argument("-cla_samples_col","--Classif_Samples_col_name", type=str, default="Model", help="(str) (default is Model) the name of the Samples names column. To be given if different from default")
@@ -138,11 +146,11 @@ decisions_of_making_log_file_to_choose_from = ["yes","y","no","n"]
 our_args_parser.add_argument("-cla_log","--Classif_make_log", choices=decisions_of_making_log_file_to_choose_from, type=str, default="yes", help="(str choice) (default is no) in classification operations, wether or not to make a log file")
 our_args_parser.add_argument("-reg_log","--Regr_make_log", choices=decisions_of_making_log_file_to_choose_from, type=str, default="yes", help="(str choice) (default is no) in regression operations, wether or not to make a log file")
 
-############## parsing them....
+############## parsing the options given by user to args....
 our_args = our_args_parser.parse_args()
 # for tests put here arguments values
 
-###..checking the exceptions...
+############## checking the exceptions...
 # if our_args.SL_tasks_to_perform is None:
 # 	our_args_parser.error('At least, 1 supervised learning task has to be chosen, choosing from  "Classif", "Regr", "Both".') # dealt with a required=True
 # if an sl_task is required and alg of same task has to be inputed
@@ -179,56 +187,54 @@ if (our_args.Regr_predsprobs_calling_threshold < 0) | (our_args.Regr_predsprobs_
 # # if a study is to be done, a list of the feature types to consider categorical (others feature types are considered real or mixed) has to be given # handled by the use of a default list
 # if ((our_args.Classif_studies is not None) | (our_args.Regr_studies is not None)) and (our_args.list_categ_fts is None):
 # 	our_args_parser.error('At least one SL study is to be carried out. Please give a list of the feature types to consider categorical (others feature types are considered real or mixed).')
-# # if a study is to be done, the minimal samples number to properly conduct the SL operation have to be given
+# # if a study is to be done, the minimal samples number to properly conduct the SL operation have to be given # handled by a default value
 # if (our_args.Classif_studies is not None) and (our_args.Classif_MSN is None):
 # 	our_args_parser.error('At least one classification study is to be carried out. Please give the minimal samples number to properly conduct the classification study(ies) to perform.')
 # if (our_args.Regr_studies is not None) and (our_args.Regr_MSN is None):
 # 	our_args_parser.error('At least one regression study is to be carried out. Please give the minimal samples number to properly conduct the regression study(ies) to perform.')
-# # if a study is to be done, the minimal samples number with the class as response to properly conduct the SL operation have to be given
+# # if a study is to be done, the minimal samples number with the class as response to properly conduct the SL operation have to be given # handled by a default value
 # if (our_args.Classif_studies is not None) and (our_args.Classif_MSN_by_class is None):
 # 	our_args_parser.error('At least one classification study is to be carried out. Please give the minimal samples number with the class as response to properly conduct the classification study(ies) to perform.')
 # if (our_args.Regr_studies is not None) and (our_args.Regr_MSN_by_class is None):
 # 	our_args_parser.error('At least one regression study is to be carried out. Please give the minimal samples number with the class as response to properly conduct the regression study(ies) to perform.')
-# if a study is to be done, the paths to the drugs and the profiles data is to be given ##!! solved by the giving a default value as the known test PDX data
-# if a study is to be done, the default reduction is no reduction.....
-# if a reduction is chosen or not the default reduction value to 10 samples is present but only be used if reduction is chosen. can be modified through this exception related argument
+# if a study is to be done, the paths to the drugs and the profiles data is to be given # handled by a default value as the known test datatests
+# if a study is to be done, the default reduction is no reduction # handled by a default value
+# if a reduction is chosen or not, the default reduction value to 10 samples is present but only be used if reduction is chosen.
 # if a reduction is chosen , the value of number of samples kept has to be inferior to 30
 if (our_args.Classif_reduce_dataset in ["yes","y"]) & ((our_args.Classif_reduced_dataset_samples_number < 7) | (our_args.Classif_reduced_dataset_samples_number > 30)) :
 	our_args_parser.error('in classification operations, if a reduction of the dataset is chosen, the value of number of samples kept has to be in interval ]7:30[.')
 if (our_args.Regr_reduce_dataset in ["yes", "y"]) & ((our_args.Regr_reduced_dataset_samples_number < 7) | (our_args.Classif_reduced_dataset_samples_number > 30)):
 	our_args_parser.error('in regression operations, if a reduction of the dataset is chosen, the value of number of samples kept has to be in interval ]7:30[.')
-# if the default 10XCV has to be changed, the int given has to be superior or equal to 2. NB : the 2nd condittion about the value not exceeding the number of samples is forced later
+# if the default 10XCV has to be changed, the int given has to be superior or equal to 2. NB : the 2nd condittion about the value not exceeding the number of samples is enforced later
 if our_args.Classif_cross_validation_folds_number < 2 :
 	our_args_parser.error('in classification operations, if the default 10XCV has to be changed, the int given has to be superior or equal to 2.')
 if our_args.Regr_cross_validation_folds_number < 2 :
 	our_args_parser.error('in regression operations, if if the default 10XCV has to be changed, the int given has to be superior or equal to 2.')
 
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+############## storing the given values by the user...
+##! last_stop
 
-### >>>>>>>>>>>>>>>>>>>>>>>>>>>VARIABLES INITALISATION 2/2 : FIXATED VARIABLES<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# not used but exploit this space for hard coding variables if necessary
-basedir = str(Path()) #for setting the working directory
-# NB : the output filename can have appointed tags to identify easier the analysis it reports on (done throughout the script and can be foung with commented "# tag caught")
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>DESCRIPTION OF THE ANALYSIS BEFORE IT STARTS
-### Describing the analysis ordered with such arguments...
-## (from here on now, tags will be taken in checkpoints throughout the script to use them in results descriptions (titles of figures, output filenames)
-#Name of the trial that will be run
-tag_num_trial = our_args.Trial_number # "Trial14" was the last # tag_num_trial = "Trial_test" for testing
-tag_num_xproc = our_args.Multiprocessing_cores # capture # tag_num_xproc = 10 for testing or tag_num_xproc = 1
+# - Describing the analysis ordered with options supplied to arguments...
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>Redirecting stdout to .o file or not<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-classif_decision_make_log = our_args.Classif_make_log
+# Name of the trial that will be run
+tag_num_trial = our_args.Trial_number # "Trial14" was the last # tag_num_trial = "Trial_test" for testing # tag caught
+# number of logical cores used CPU-wise
+tag_num_xproc = our_args.Multiprocessing_cores # capture # tag_num_xproc = 10 for testing or tag_num_xproc = 1 # tag caught
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>REDIRECTION OF STDOUT TO .o FILE OR NOT<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+classif_decision_make_log = our_args.Classif_make_log # tag caught
 if classif_decision_make_log in ["yes", "y"]:
 	original_out = sys.stdout
 	sys.stdout = open(basedir + "/" + "outputs" + "/" + "Output_following_" + tag_num_trial + ".o", 'w')
-print('This is the file following the course of the run:')
+
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 ###...and describe the analysis built
-print("This analysis is named : " + tag_num_trial + " and is supported by " + str(tag_num_xproc) + " cores") #tag caught # tag caught
+print('This is the file following the course of the run:')
+print("This analysis is named : " + tag_num_trial + " and is supported by " + str(tag_num_xproc) + " cores")
 print("It will carry out these SL tasks : {}.".format(', '.join(our_args.SL_tasks_to_perform))) #tag will be caught when entering classif or regr operations
 if ("Classif" in our_args.SL_tasks_to_perform) | ("Both" in our_args.SL_tasks_to_perform) :
 	print("For the classification task, each of these algorithms will be tested : {}".format(', '.join(our_args.Classif_algs)))  #{}".format(', '.join(str(v) for v in our_args.Classif_algs)))

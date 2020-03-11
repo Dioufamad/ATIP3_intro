@@ -4,31 +4,43 @@ A start on ATIP 3 and around it a bit...
 
 Scientific questions : 
 
-- Q1 : What are the molecular workings of the ATIP3 protein that causes those severe cases of breast cancer ?
-- Q2 : What compound could be cancdidate for a treatment ?
+- Q1 : What are the molecular workings of the ATIP3 protein in the setting of those severe cases of breast cancer ?
+- Q2 : What compounds could be candidate for a treatment ?
+
+
 
 ###### Progress on Q1
 
+The idea : lets start small and build a code that can give us genes that are candidates for a role in the variation of a response
+
 Steps for Q1 : 
-- 0 : make a code for each class of methods as ready to run code 
+- 0 : make a code for each class of methods (univariate, multivariate and learning based) as ready to run code ()
 - 1 : just choose a dataset for gex and compare away! 
 - 2 : a synthetic benchmark is needed. NB : the email of the synthetic dataset from Chloé use it for the synthetic benchmark after the code is ready 
 - 3 : we need to push further on the networks and compare them to the supervised learning approch methods 
-- 4 : at this point, generating list of features is a hot launch, we need to focus on the treatments side and also mak it a hot launches 
+- 4 : at this point, generating list of features is a hot launch, we need to focus on the treatments side and also mak it a hot launch 
 - 5 : what we know about each of the two wings of the projects has to be crossed...to be thought about.
 
-Present developpements : 
+###### Present developpements : 
 - the wiki has the entries for the scientific reasoning until here
+- 3 cohorts datasets (REMAGUS02, REMAGUS02 or MDAnderson) are available with gene expression data ()
+- A Python 3.7 code has been started
+- the code for univariate and multivariate analysis is ready. Tests will be done on each subsets of candidates selected by ML methods
+- the code for ML methods is at 70%.
 
-Ongoing : 
-- making a code for the univariate as a standalone quick launch command line tool on Python 3.7
+- 
+
+###### Ongoing : 
+- finishing the code for ML to select subsets of genes (multivariate and univariates methods to relaunch for subset of those subsets) 
 
 ###### Progress on Q2
 
 None
 
 #### Last progress 
+- convert AFFIMETRIX probe set ID into gene symbol
+- add the 2 multivariate tests used for feature selection in SLATE
 
-- convertion of the encoding of the n,ew files with this this : 
-https://www.tecmint.com/convert-files-to-utf-8-encoding-in-linux/
-- dont forget to share the archive with the xlrd lib on it
+
+
+ 

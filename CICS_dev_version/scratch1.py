@@ -1,3 +1,24 @@
+# separators
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>IMPORTS
+#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF IMPORTS
+
+#======================================##! 881
+import os
+os.system("ls")
+curpath = os.getcwd()
+curpath
+#======================================
+import os
+d = os.path.dirname(__file__) # directory of script
+p = r'{}/results/graphs'.format(d) # path to be created
+
+try:
+    os.makedirs(p)
+except OSError:
+    pass
+#======================================
+
+
 #
 # # meth
 # test_df =df_joined[df_joined.columns[:10]]
