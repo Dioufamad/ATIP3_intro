@@ -285,6 +285,7 @@ elif ("Regr" in tag_tasks_to_perform) | ("Both" in tag_tasks_to_perform) :
 ##! pursue the decription later on
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>CLASSIFICATION OPERATIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 print(bcolors.OKGREEN + "Engaging Classification task of the analysis named "+tag_num_trial+"..." + bcolors.ENDC)
 before_all_classif_ops_timer_start = timer_started() # start a timer here for all the classif part that will be ran

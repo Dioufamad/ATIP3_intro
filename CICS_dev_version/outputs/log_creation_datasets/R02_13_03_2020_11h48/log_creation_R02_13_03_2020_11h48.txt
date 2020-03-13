@@ -1,0 +1,27 @@
+Backend Qt5Agg is interactive backend. Turning interactive mode on.
+Initialising environnement variables...
+All imports and settings are successfully placed
+Welcome in the formatting tool for the Remagus02 dataset in direction to CICS
+We suppose you have done the querying of a database and you have separated values files (csv,tsv,xls, etc.).
+Such values tables describe samples over multiples features, rows samples and features as columns or vice-versa.
+We will try to format it into this representation :
+- a .csv file that have succesively 3 groups of columns as features with features names as the titles of the columns
++ 1 column as the classes and titled BestResCategory
++ multiples columns, each one as a feature tityle the feature name
++ 1 column as the samples and titled Model
+Necessary libraries imported.
+Environnement variables initialised.
+Storing data files...
+Preprocessing...
+Report on the losses during the cleaning of the uncomplete samples info of the left table :
+9 samples has been lost during the cleaning of the uncomplete samples info of the left table
+Report on the losses during the cleaning of the uncomplete features info of the joined table :
+No samples has been lost during the cleaning of the uncomplete features info of the joined table
+Describing the obtained final samples-features-response frame...
+The frame to analyse has  221 samples and  54675 features
+Among 221 samples, 2 classes has been detected as being : Res and Sen.
+The class value Res is found on 185 samples counting for 83.710 % of the samples
+The class value Sen is found on 36 samples counting for 16.290 % of the samples
+The final dataframe (dframe) is ready ! Lets save it in a .csv file...
+File saved !
+REMAGUS02 dataset formatting for CICS analysis is done!

@@ -1,0 +1,40 @@
+Backend Qt5Agg is interactive backend. Turning interactive mode on.
+Initialising environnement variables...
+All imports and settings are successfully placed
+Necessary libraries imported.
+Environnement variables initialised.
+The final dataframe (dframe) is supplied ! Now onto the data analysis...
+This tool can perform these following data analysis :
+- visuals on data.
+- univariates analysis
+- multivariate analysis
+- machine learning analysis
+- please read documentation joined to properly launch other possible tasks.
+Reading the dataframe to analyse...
+DESCRIBING THE OBTAINED FINAL SAMPLES-FEATURES-RESPONSE FRAME...
+The frame to analyse has  221 samples and  54675 features
+Among 221 samples, 2 classes has been detected as being : Res and Sen.
+The class value Res is found on 185 samples counting for 83.710 % of the samples
+The class value Sen is found on 36 samples counting for 16.290 % of the samples
+This is a description of the first 10 features values
+        1007_s_at     1053_at      117_at  ...     1316_at     1320_at   1405_i_at
+count  221.000000  221.000000  221.000000  ...  221.000000  221.000000  221.000000
+mean    10.543236    7.921196    5.412946  ...    2.913800    2.601583    8.366864
+std      0.892874    0.662428    1.137819  ...    0.093972    0.088798    1.917375
+min      5.716515    6.269142    3.153570  ...    2.781336    2.496452    3.191868
+25%     10.089027    7.477169    4.663645  ...    2.873144    2.555999    7.246163
+50%     10.533463    7.842202    5.289459  ...    2.896330    2.579968    8.405304
+75%     11.084611    8.392776    6.235020  ...    2.915867    2.612868    9.747933
+max     12.844101    9.952190    8.687658  ...    3.510338    3.178476   13.320683
+DATA FILTERING...
+No feature have been taken out of the final frame due to non informativeness.
+In the resulting final frame 54675 features remaining describing 221 samples.
+UNIVARIATE ANALYSIS
+Univariate Analysis : histograms for the ditribution of a features's attributes in each class (Figure 1)
+Univariate Analysis : LVplot (letter value plot) for classes behaviour in regards to a feature (Figure 2)
+MULTIVARIATE ANALYSIS
+Multivariate Analysis : Heatmaps for correlation between features (Figure 3)
+Multivariate Analysis : Equatorial coordinates to see if the values of a couple of features differ between the classes (Figure 4)
+Multivariate Analysis : features ranking with Student t-test p-values (Table 1)
+The feature ranking final dataframe (dframe) is ready ! Lets save it in a .csv file...
+File saved !

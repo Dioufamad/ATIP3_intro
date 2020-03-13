@@ -1,6 +1,4 @@
-# =============================== DIFFERENTLY EXPRESSED GENES INQUIRY  ========================================
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> REMAGUS02 DATASET FORMATTING FOR CICS SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 import os
@@ -37,8 +35,8 @@ basedir = str(Path()) #for setting the working directory to create the paths to 
 # tag_decision_launching_way = "cmd_line"
 tag_decision_launching_way = "line_by_line"
 # ----for the location of the datasets
-# command_center = "Gustave_Roussy"
-command_center = "Home"
+command_center = "Gustave_Roussy"
+# command_center = "Home"
 # ----for the cohort choice
 cohort_used = "REMAGUS02"
 # cohort_used = "REMAGUS04"
@@ -297,7 +295,7 @@ tag_profilename = "GEX"
 # the output path has 3 parts : the root until the ouput folder, the output folder, and the filename
 # - lets make the file name
 output_filename_for_final_dframe = tag_ctype + "_" + tag_drugID + "_" + tag_respType + "_" + tag_profilename + ".csv"
-# - lets make the root until the ouput folder
+# - lets make the root until the ouput folder (the output folder excluded)
 if tag_decision_launching_way in ["cmd_line","cl"]: # launch the script in a terminal
 	os.chdir(os.path.dirname(os.path.abspath(__file__)))
 	root_until_output_folder = os.getcwd() # obtained by changing directory
@@ -308,17 +306,19 @@ else: # launch the script line by line
 		root_until_output_folder = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version"
 # - lets make the output folder
 output_folder_on_same_lvl_than_main_name = "outputs"
-if not os.path.exists(output_folder_on_same_lvl_than_main_name):
-	os.mkdir(output_folder_on_same_lvl_than_main_name)
+# - lets extend the root path to contain the output folder
+root_until_output_folder_w_output_folder = os.path.join(root_until_output_folder,output_folder_on_same_lvl_than_main_name)
+if not os.path.exists(root_until_output_folder_w_output_folder):
+	os.mkdir(root_until_output_folder_w_output_folder)
 # - lets make the full path to the file to save
-fullname = os.path.join(root_until_output_folder, output_folder_on_same_lvl_than_main_name,output_filename_for_final_dframe)
-# - lets save the file
+fullname = os.path.join(root_until_output_folder_w_output_folder,output_filename_for_final_dframe)
+# - lets us the full path to save the file
 dframe.to_csv(fullname, index=None, header=True)
 print("File saved !")
 print(cohort_used,"dataset formatting for CICS analysis is done!")
 ##! also delete all the uneccesary variables got sooner
+##! also create a log of all operations
 
-##! last_stop
 
 ####-----A checkpoint to check on data
 # ---> Let's take a first look at our dataset to see what we're working with!
@@ -326,135 +326,4 @@ print(cohort_used,"dataset formatting for CICS analysis is done!")
 # ----> Let's find out about the data types we have accross columns :
 # dframe.info()
 ####-----
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-print("The final dataframe (dframe) is supplied ! Now onto the proper data analysis...")
-print("We will try to have a complete cycle of the data analysis including :  ")
-print("- visuals on data.")
-print("- univariates analysis")
-print("- multivariate analysis")
-print("- machine learning analysis")
-#---> Let's do statistics on our datasets variables
-# check if in each column, the values stay in a reasonable scale and what they are :
-# (missing values?,min, max, quartils for scale, mean, sd, etc. )
-# - removing null values to avoid errors
-# dframe.dropna(axis='columns',inplace=True) # (already done)
-# - percentile list
-# perc =[.25, .50, .75, .90]  ##! can be choosed later with an arguement
-# - list of dtypes to include
-# include =['object', 'float', 'int']    ##! to be choosed by operator   (1 argument)
-# - stash the describe result
-# desc = sdss_df.describe(percentiles = perc, include = include)  # used by the args for perc values and the types
-desc = dframe[dframe.columns[:10]].describe() ##! to reuse with list of candidates genes in order to see how there values are
-## default include=None only takes into acount the numeric as dtypes columns (very good compromise to easily capture except for a few prticular cases of samples names in numeric
-# default  percentile are 0.25, 0.50 and 0.75 so quite okay to join it with min and max and see the range the values of a feature are staying
-# calling describe method (optional) ##! keep a figure of 5 1st features to see
-print(desc)
-##! idea : for each class, extract the 3rd quantile of each ft and it is the value having under it the 75% of the population
-# count that num of samples that are less than the 3rd quartile value, in each class
-# make a table with row as ft, x cols for x classes and for each class the % of that class samples under the 3rd quartile
-# add two columns, for most and least bags
-# make a table of 4 cols, each col is a class and the genes that are over or under expressed
-# sort the cols that are
-# this gives for each ft, between both classes, where the overpression of the ft lies more
-
-#=======> 1st DATA FILTERING
-print("DATA FILTERING...")
-# ---> discarding features that we consider non informative (nif) (a unique value in a col while the response changed across samples)
-if len(RespClasses) == 0 :
-	print("Only 1 class exist in your population. Electing non informative features is not possible.")
-	dframe_wo_nif = dframe
-else:
-	dframe_w_nif_cols = list(dframe)   # show the features in drection of dropping the mostly non related to class ## (see also df_cols = sdss_df.columns.values )
-	dframe_wo_nif = dframe.drop(dframe.columns[dframe.apply(lambda col: col.nunique(dropna=True) == 1)], axis=1) # dropping the cols with num unique values = 1
-	dframe_wo_nif_cols = list(dframe_wo_nif)
-	nif_cols = [x for x in dframe_w_nif_cols if x not in dframe_wo_nif_cols] ##! output a list of this
-	dframe_of_nif = dframe[nif_cols] # keep this
-	# report on the remaining fts and samples
-	remaining_samples = len(dframe.axes[0])
-	remaining_feats = len(dframe.axes[1])-2 # withdraw of the total the samples and the response col
-	if len(nif_cols) ==0:
-		print("No feature have been taken out of the final frame due to non informativeness.")
-	else:
-		print(len(nif_cols),"features have been taken out of the final frame due to non informativeness.")
-	print("In the resulting final frame",remaining_feats,"features remaining describing",remaining_samples,"samples.")
-
-
-# ##! volontarely dropping columns the operator knows not informative by prior knowledge
-# make a for loop and going through the list provided by the op, if in the dframe_wo_nif_cols we drop it with (axis=1, inplace=True)
-# ex : sdss_df_vfo.drop(['objid', 'run', 'rerun', 'camcol', 'field', 'specobjid'], axis=1, inplace=True)
-
-# dframe_wo_nif.head(1) # (optional) " only to see what 1 line of the dframe looks like now # not possible if too many fts
-
-#==========> Univariate Analysis
-# Methodology :
-# - we have 2 steps here :
-# 1) focus some 2 or 3 features
-# 2) for those features, examine the distribution of the values, deduce the range comprising the most values for each class,
-# and then knowing the role of the feature from previous knowledge, conclude that this class of the studied phenomena comes
-# with this feature role in those values (eg : a feature D is an estimate for the distance, classes are the state of blur due to the distance
-# within this list [not blurred-A, abitblurred-B, blurred-C,veryblurred-D]
-# nb :  the case where the distribution are close to same across the classes mean that this feature does not have enough classifying power for this phenomena
-# - the distplot tells us how most of each class behave for the fts D
-# - and then we can order the classes for each ft (which class of car are further, then after them which one, then after them which one)
-# - this is called distinguishing the classes just based on a column
-#-----> Way 1 : histograms for a ft for each class
-# make distribution of a variable in a class
-# formula : f(feature,class label) -> ditributuion of features's attributes in each class
-# objective : To guess a variable possible contribution in a model visualy. Also to link variablme significance to the distribution
-# (this portion of the data of class x is in k interval so it relates to this aspect in real life)
-foi = feat_cols[0] # ft of interest " chosen here as the 1st ft just as an example ##! get from the operator
-fig, axes = plt.subplots(nrows=1, ncols=2,figsize=(16, 4))
-ax = sns.distplot(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[0]][foi], bins = 30, ax = axes[0], kde = False)
-ax.set_title(encoded_classes[0])
-ax = sns.distplot(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[1]][foi], bins = 30, ax = axes[1], kde = False)
-ax.set_title(encoded_classes[1])
-##! add a saving option to save this figure
-##! using a for loop, this can be produced for all features and kept away
-##! such a figure would be more interesting if done for features that are supposed to be the most contributing to the tests, so do it after the univariate tests rankings
-# - a table summarizing this (where are 75% of the values by class for each feature ?) using the univariate tests rankings
-
-# -------> Way 2 : LVplot (letter value plot)
-# Another way is to do univariate is that, for each ft, boxing the values ny bags and comparing the bags size
-# (base length = number of values and height is the range where the values are)
-# Interpretation 1 : similar boxing across 2 classes shows same behaviour in regards to the ft analysed
-# Interpretation 2 : ###! last stop
-fig, axes = plt.subplots(nrows=1, ncols=1,figsize=(16, 4))
-ax = sns.lvplot(x=dframe_wo_nif[Resp_col_name_left], y=dframe_wo_nif[foi], palette='coolwarm')
-ax.set_title(foi)
-##! add a saving option to save this figure
-##! such a figure would be more interesting if done for features that are supposed to be the most contributing to the tests, so do it after the univariate tests rankings
-
-# ----> Way 3 : We have a high number of features. Let's rank them to examine more the top ones
-
-
-
-# ======> Multivariate Analysis :
-# 1) Heatmaps for correlation between features
-# This to just get a feeling of features that separate from the rest in correlation
-
-fig, axes = plt.subplots(nrows=1, ncols=2,figsize=(16, 4))
-fig.set_dpi(100)
-ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[0]][dframe_wo_nif_cols[2:10]].corr(), ax = axes[0], cmap='coolwarm')
-ax.set_title(encoded_classes[0])
-ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[1]][dframe_wo_nif_cols[2:10]].corr(), ax = axes[1], cmap='coolwarm')
-ax.set_title(encoded_classes[1])
-# des correlations pas très fortes mais toujours présentes existent entre certains features qui semblent proches en denomination
-##! Le grd nombre de feature invit à répéter cette opération après le ranking avec des univariates tests
-# Interpretation awaited 1 : a correlation space means that the features in that space in regards to their role are
-# more invested in the interplay leading to the phonemenon and sould be examinated more if the phenomenan is to be understood.
-# Interpretation awaited 1 : also, if the correlation space is th same for every class, the feature behave the same towards the classes, hence has little to no classifying power
-# therefore the feature has little to nothing to do with the interplay leading to the phenomenon
-
-# 2) multivariate for a duo of features : Plotting fetaures 2 by 2 (##! usefull after a ranked list of features is obtained)
-# Interpretation  awaited 1 : see first if the values of the couple of fts does differ between the classes.
-# this is the same than studying the classes distribution over the values of one ft in the univariate analysis, except now it is done for for 2 fts at the same time.
-##! modify it to be for 3 fts using a surface (4th ft canot be because colour is already used to differentiate clsses)
-# The whole idea is to see if the classes generally differ accross the values of the a group of classes (two or three)
-# this is to see that if an enclosed phenomenon is controled by these 2/3 fts, the globally inquired phenomenon is not
-# varying following that enclosed one.
-##! make a function of this and call it anytime
-foi1 = feat_cols[0]
-foi2 = feat_cols[1]
-sns.lmplot(x=foi1, y=foi2, data=dframe_wo_nif, hue=Resp_col_name_left, fit_reg=False, palette='coolwarm', size=6, aspect=2)
-plt.title('Equatorial coordinates')
 
