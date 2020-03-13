@@ -21,12 +21,19 @@
 # 	print(lost_fts,"samples has been lost")
 #======================================##! 881
 
-import os
-print('[initial directory]')
-print('getcwd:      ', os.getcwd())
-print('[change directory]')
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-print('getcwd:      ', os.getcwd())
+from pathlib import Path # to manage paths as into arguments
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> Variables to initialise------------------------------------------
+# print("Initialising environnement variables...")
+# -----needed to save the output dataset
+basedir = str(Path()) #for setting the working directory to create the paths to the location of the output dataset
+print(basedir)
+
+# import os
+# print('[initial directory]')
+# print('getcwd:      ', os.getcwd())
+# print('[change directory]')
+# os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# print('getcwd:      ', os.getcwd())
 
 
 # import os
