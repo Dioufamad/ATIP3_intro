@@ -41,7 +41,7 @@ print("All imports and settings are successfully placed")
 print("Storing data files...")
 # stock the file and its separator
 if command_center == "Gustave_Roussy" :
-	file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/annotations/Annotations.xlsx" # @ GR
+	file_path = "/atip3_material/3c_data_trial1/annotations/Annotations.xlsx"  # @ GR
 	sep_in_file = "\t"
 	if cohort_used == "REMAGUS02" :
 		sheet_id = "REMAGUS02"

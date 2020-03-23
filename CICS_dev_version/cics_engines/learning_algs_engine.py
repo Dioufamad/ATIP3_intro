@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler # a scaling function
 # ---RF installation
 from sklearn.ensemble import RandomForestClassifier
 from math import sqrt # for mtry computation
-from slate_engines.fs_engine import length_features_list # for numbers of fts computation in mtry
+from cics_engines.fs_engine import length_features_list # for numbers of fts computation in mtry
 #--- XGBoost installation
 from xgboost import XGBClassifier
 #--- GBM installation

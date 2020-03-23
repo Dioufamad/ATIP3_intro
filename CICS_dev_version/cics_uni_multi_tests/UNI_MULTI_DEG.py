@@ -1,14 +1,8 @@
 # =============================== DIFFERENTLY EXPRESSED GENES INQUIRY  ========================================
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#>>>>>>>>>>>>>>>>>>>>>>>>>>> README <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-print("Welcome in Case Implicated Candidates Search (CICS)")
-print("We suppose you have done the querying of the database and you have separated values files (csv,tsv,etc.).")
-print("Such values tables describe samples over multiples features, rows samples and features as columns or vice-versa.")
-print("We will try to realise a search of the features that are differently varying following a response.")
-print("Such features are the candidates we search for...")
-print("Importing necessary libraries...")
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+import os
 import pandas as pd # for dataframes manipulation
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler # to change the Response values from string to classes 0 and 1 # not needed at the moment
 import numpy as np # linear algebra and exploit arrays faster and easier computations
@@ -32,13 +26,19 @@ import time
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 # %matplotlib inline
-
-# ---------------------Variables to initialise------------------------------------------
+from pathlib import Path # to manage paths as into arguments
+from slate_engines.fs_engine import ranker_by_pval_v2
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> Variables to initialise------------------------------------------
 print("Initialising environnement variables...")
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') #for setting the characters format
+# -----needed to save the output dataset
+basedir = str(Path()) #for setting the working directory to create the paths to the location of the output dataset
+#---how to launch the script
+# tag_decision_launching_way = "cmd_line"
+tag_decision_launching_way = "line_by_line"
 # ----for the location of the datasets
-# command_center = "Gustave_Roussy"
-command_center = "Home"
+command_center = "Gustave_Roussy"
+# command_center = "Home"
 # ----for the cohort choice
 cohort_used = "REMAGUS02"
 # cohort_used = "REMAGUS04"
@@ -51,178 +51,71 @@ plt.rc('axes', titlesize=MEDIUM_SIZE)
 plt.rc('axes', labelsize=MEDIUM_SIZE)
 plt.rcParams['figure.dpi']=150
 print("All imports and settings are successfully placed")
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>> README <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+print("Necessary libraries imported.")
+print("Environnement variables initialised.")
+print("The final dataframe (dframe) is supplied ! Now onto the data analysis...")
+print("This tool can perform these following data analysis :  ")
+print("- visuals on data.")
+print("- univariates analysis")
+print("- multivariate analysis")
+print("- machine learning analysis")
+print("- please read documentation joined to properly launch other possible tasks.")
+
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> DATA PREPROCESSING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-print("Preprocessing...")
-# the file we are given a table with the intent to represent values, each one corresponding to a variable and a sample
-# the vision is one of these 2 representations : variables as columns and rows as samples, or vice-versa
-
-# 1st issue : the file might not be in a supported encoding so we have to reencode it in UTF-8
-
-# file -i REMAGUS02-Données\ genomique_226x54676\ totales.txt
-# iconv -f UTF-16LE -t UTF-8//IGNORE REMAGUS02-Données\ genomique_226x54676\ totales.txt > output2.tsv
-
-# stock the file and its separator
+print("Reading the dataframe to analyse...")
+# stock the file path and its separator
 if command_center == "Gustave_Roussy" :
-	file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ GR
-	sep_in_file = "\t"
-	supporting_file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ GR
-	sheet_id = "extractionCNahmias"
+	file_path = "/atip3_material/datasets_to_process_folder/R02/BRCA_Treatment11_REMAGUS02xNACx221x54675_GEX.csv"  # @ GR
+	sep_in_file = ","
+	supporting_file_path = "/atip3_material/table_of_treatments_details/treatments_details_source.csv"  # @ GR
+	# sep_in_file_sup = "," # use the one for dataset
 else :  # command_center == "Home"
-	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ home
-	sep_in_file = "\t"
-	supporting_file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ home
-	sheet_id = "extractionCNahmias"
+	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R02/BRCA_Treatment11_REMAGUS02xNACx221x54675_GEX.csv" # @ home
+	sep_in_file = ","
+	supporting_file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/table_of_treatments_details/treatments_details_source.csv" # @ home
+	# sep_in_file_sup = "," # use the one for dataset
 
-#>>>>>-----start of everything that is data fil specific in the preprocessing
-if cohort_used == "REMAGUS02" :
-	#make a df out of the file (# ---> how to stock a dataset)
-	df_file = pd.read_csv(file_path,sep_in_file) ##! add skiprows=0 to skip lines 0 lines here, default is None
-	df_sup_file = pd.read_excel(supporting_file_path,sheet_id)
-	# restricting the support info table to only the needed columns
-	# needed columns : sample col, response col
-	# NB : the 2 samples columns must have different names to join them later
-	old_Samples_col_name_left = "CLETRI" # given cols name by the user ##! both got from the arguments
-	Samples_col_name_left = "Sample_id_bis" # for the left table
-	old_Resp_col_name_left = "RCH"
-	Resp_col_name_left = "Resp_Class" # set cols name by the tool for future dealings
-	old_Samples_col_name_right = "cletri"
-	Samples_col_name_right = "Sample_id" # for the right table
-	common_samples_id_prefix = "CLETRI"
-	# Objective : joining both tables (the one with the features and the one with the response)
-	# -----> put in form the content of each table
-
-	# - put in form the content of response table (LEFT)
-	df_sup_file = df_sup_file[[old_Samples_col_name_left,old_Resp_col_name_left]]
-	df_sup_file.rename(columns={old_Samples_col_name_left: Samples_col_name_left, old_Resp_col_name_left : Resp_col_name_left}, inplace=True)
-	df_sup_file.dropna(axis='index', inplace=True) # lets make sure the load out going to the left is without nan
-	df_sup_file[Samples_col_name_left] = common_samples_id_prefix + "_" + df_sup_file[Samples_col_name_left].astype(str) # sample_name is a string ColumnName_IdInColumn
-	# df_sup_file[Resp_col_name_left] = df_sup_file[Resp_col_name_left].astype(int) ##! remove bcuz not needed, iz done later on after the join
-
-	# - put in form the content of features table (RIGHT)
-	df_file = df_file.transpose() # changes columns into rows
-	# make the index (presently being the sample names) as an index
-	df_file = df_file.reset_index() # reset the index in a way to get the older index as a column
-	df_file.columns = df_file.iloc[0] # take the first line and use it as titles of the columns
-	df_file = df_file.drop(df_file.index[0]) # drop the first line because it is now the titles of the columns
-	df_file = df_file.reset_index(drop=True) # the index is missing now a the 1st line and is starting by 1 instead of 0. reset it in a way to not get a new column
-	# dropping columns that are not necessary
-	list_of_unecessary_cols_2_drop = ["CLETRI"]
-	df_file.drop(labels=list_of_unecessary_cols_2_drop, axis=1, inplace=True) # dropping a column that is just a repetiton of the sample names col
-	# renaming the sample column
-	df_file.rename(columns={old_Samples_col_name_right: Samples_col_name_right}, inplace=True)
-	df_file[Samples_col_name_right] = common_samples_id_prefix + "_" + df_file[Samples_col_name_right].astype(str) # sample_name is a string ColumnName_IdInColumn
-
-	# - time for the joining of the features and responses table (joined on the sample name columns)
-	df_joined = pd.merge(df_sup_file, df_file, how="inner", left_on=Samples_col_name_left, right_on=Samples_col_name_right)
-elif cohort_used == "REMAGUS04" :
-	print("dataset treatment to add")
-elif cohort_used == "MDAnderson" :
-	print("dataset treatment to add")
-else :
-	print("no dataset known added for treatment")
-#<<<<<<<----end of all that is data file specific about the preprocessing
-
-# >>>>>---------formatting every group of columns in the final frame
-# the awaited configuration is :
-# - 1 column of dtype object (samples names)
-# - 1 column that can have anything as dtype (the response) and that is why we encode it
-# - and a bunch that is int64/float64/object but the one and the same type that we previously formatted in bools or floats
-
-# dropping the extra sample column
-df_joined.drop(labels=[Samples_col_name_left], axis=1, inplace=True)
-del df_file # clear memory
-del df_sup_file # clear memory
-# store the resp col that is last, drop it from the df and then insert it again at the 2nd position of the df
-Resp_col_to_move = df_joined[Resp_col_name_left]
-df_joined.drop(labels=[Resp_col_name_left], axis=1, inplace=True)
-df_joined.insert(1, Resp_col_name_left, Resp_col_to_move)
-del Resp_col_to_move # clear memory
-# drop all rows with nan (in R02, b4 : 221x54677 aft : 221x54677)
-# df_joined = df_joined.dropna(axis='index') # less efficient
-df_joined.dropna(axis='index',inplace = True) ##! choose if you lose samples or fts
-# keep a copy of the raw final df
-# df_joined_res = df_joined
-# use this to get a peak at the dtypes in the final dataframe
-# df_joined[df_joined.columns[:10]].dtypes
-
-
-# giving names to the each of the 3 groups of columns to manipulate them in group using a name
-# sampl_col = df_joined.columns[0] is already Samples_col_name_right
-# resp_col = df_joined.columns[1] is already Resp_col_name_left
-feat_cols = df_joined.columns[2:]
-# formatting the dtypes of each group of columns
-df_joined[Samples_col_name_right] = df_joined[Samples_col_name_right].astype(str) ##! not needed if already formatted in df_left # strings dtype is object
-df_joined[Resp_col_name_left] = df_joined[Resp_col_name_left].astype(int) ##! not needed if already formatted in df_left  # or df_joined["RCH"] = df_joined["RCH"].astype("int")
-# df_joined[feat_cols] = df_joined[feat_cols].transform(lambda x: x.str.replace(',','.')) # slow and complex # replace the commas blocking the conversion of objects in floats
-df_joined[feat_cols] = df_joined[feat_cols].replace(",", ".", regex=True)
-# meth 6 used to change all fts values into floats
-old_fts_col_names = df_joined[feat_cols].columns
-df_fts_as_series = df_joined[feat_cols].values.astype(np.float64)
-df_fts_back_as_df = pd.DataFrame(df_fts_as_series)
-df_fts_back_as_df.columns = old_fts_col_names
-# instead of putting the galerie of df_fts back in the df_joined, just take the 2 remaining cols and add them to it
-df_fts_back_as_df.insert(0, Samples_col_name_right, df_joined[Samples_col_name_right])
-df_fts_back_as_df.insert(1, Resp_col_name_left, df_joined[Resp_col_name_left])
-dframe = df_fts_back_as_df
-del df_fts_back_as_df
-# df_fts_changed_as_df[df_fts_changed_as_df.columns[:10]].dtypes
-dframe.info() # for an overall summary of remaining dtypes
-
-#cleaning out the coerced values and reporting on the loss due to formatting the fts dtypes
-samples_b4_coercing = len(dframe.axes[0])
-fts_b4_coercing = len(dframe.axes[1])-2
-dframe.dropna(axis='index',inplace = True) # removing null values to avoid errors
-samples_aft_coercing = len(dframe.axes[0])
-fts_aft_coercing = len(dframe.axes[1])-2 # withdraw of the total the samples and the response col
-lost_samples = samples_b4_coercing - samples_aft_coercing
-lost_fts = fts_b4_coercing - fts_aft_coercing
-print("Report on the losses during the formatting of the features data types : ")
-if lost_samples==0:
-	print("No samples has been lost")
-else:
-	print(lost_samples,"samples has been lost")
-if lost_fts==0:
-	print("No features has been lost")
-else:
-	print(lost_fts,"samples has been lost")
-
-# formatting the response column, ordering it by class, displaying a report on the classes
+##! a mock up of df making # replace later
+dframe = pd.read_csv(file_path,sep_in_file) ##! add skiprows=0 to skip lines 0 lines here, default is None
+dframe_sup = pd.read_csv(supporting_file_path,sep_in_file)
+# needed columns : sample col, response col
+Resp_col_name_left = "BestResCategory"
+Samples_col_name_right = "Model" # for the right table
+# displaying a report on the classes
 RespBin = dframe.loc[:,[Resp_col_name_left]]  # get the 1st column of data ... # anciently it was dframe[Resp_col_name] but gives a series instead of a df
 RespClasses = sorted(RespBin.iloc[:, 0].unique())
 binary_classes_le = LabelEncoder()  # the encoder
 binary_classes_le.fit(RespClasses)  # encode the classes to memorize
 encoded_classes = binary_classes_le.classes_ ##! change it into a list to access it directly (list of cols of array, same as getting the cols of a df)
 del RespBin # clear mem
-# del RespClasses # clear mem
-# sort the dataframe entries following response col values and remake a new index
-# sort the df following the values of the resp column
-dframe.sort_values(Resp_col_name_left, axis=0, ascending=True, inplace=True, kind='mergesort')
-# after the precedent sort, the indexes are not in order. make a new order for them
-dframe = dframe.reset_index(drop="True")
-print("Describing the obtained final samples-features-response frame...")
+print("DESCRIBING THE OBTAINED FINAL SAMPLES-FEATURES-RESPONSE FRAME...")
 total_samples = len(dframe.axes[0])
 total_feats = len(dframe.axes[1])-2 # withdraw of the total the samples and the response col
 print("The frame to analyse has ", total_samples,"samples and ",total_feats ,"features")
 print("Among",total_samples,"samples,",len(encoded_classes),"classes has been detected as being : {}.".format(' and '.join(str(class_value) for class_value in encoded_classes)))
 for class_value in encoded_classes:
-	class_size = df_joined.iloc[:, 1].value_counts()[encoded_classes[list(encoded_classes).index(class_value)]]
-	class_size_perc = class_size / total_samples
-	print("The class value",class_value,"is found on ",class_size,"samples counting for ",class_size_perc,"of the lot")
+	class_size = dframe.iloc[:, list(dframe).index(Resp_col_name_left)].value_counts()[encoded_classes[list(encoded_classes).index(class_value)]] # before it was using dframe.iloc[:, 0]
+	class_size_perc = (class_size / total_samples)*100
+	print("The class value",class_value,"is found on",class_size,"samples counting for",'{:.3f}'.format(class_size_perc),"% of the samples")
+# -------step 17 : giving names to the each of the 3 groups of columns to manipulate them in group using a name
+# sampl_col = df_joined.columns[0] is already Samples_col_name_right
+# resp_col = df_joined.columns[1] is already Resp_col_name_left
+# strategy of saomples col pos : samples moved to last col or not
+tag_decision_move_samples_col_at_last_pos = "yes"
+# tag_decision_move_samples_col_at_last_pos = "no"
+if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # decide where are the fts
+	index_ft_one = 1
+	# index_ft_last = -1
+	feat_cols = dframe.columns[index_ft_one:-1]
+else:
+	index_ft_one = 2
+	# index_ft_last = len(dframe.columns)-1
+	feat_cols = dframe.columns[index_ft_one:]
 
+##! last_stop
 
-print("The final dataframe (dframe) is ready ! Now onto the proper data analysis...")
-##! also delete all the uneccesary variables got sooner
-
-# ---> Let's take a first look at our dataset to see what we're working with!
-# dframe[dframe.columns[:10]].head()
-# ----> Let's find out about the data types we have accross columns :
-# dframe.info()
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>INITIAL DATA ANALYSIS OPERATIONS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-print("We will try to have a complete cycle of the data analysis including :  ")
-print("- visuals on data.")
-print("- univariates analysis")
-print("- multivariate analysis")
-print("- machine learning analysis")
 #---> Let's do statistics on our datasets variables
 # check if in each column, the values stay in a reasonable scale and what they are :
 # (missing values?,min, max, quartils for scale, mean, sd, etc. )
@@ -238,6 +131,7 @@ desc = dframe[dframe.columns[:10]].describe() ##! to reuse with list of candidat
 ## default include=None only takes into acount the numeric as dtypes columns (very good compromise to easily capture except for a few prticular cases of samples names in numeric
 # default  percentile are 0.25, 0.50 and 0.75 so quite okay to join it with min and max and see the range the values of a feature are staying
 # calling describe method (optional) ##! keep a figure of 5 1st features to see
+print("This is a description of the first 10 features values")
 print(desc)
 ##! idea : for each class, extract the 3rd quantile of each ft and it is the value having under it the 75% of the population
 # count that num of samples that are less than the 3rd quartile value, in each class
@@ -276,6 +170,7 @@ else:
 # dframe_wo_nif.head(1) # (optional) " only to see what 1 line of the dframe looks like now # not possible if too many fts
 
 #==========> Univariate Analysis
+print("UNIVARIATE ANALYSIS")
 # Methodology :
 # - we have 2 steps here :
 # 1) focus some 2 or 3 features
@@ -292,6 +187,7 @@ else:
 # formula : f(feature,class label) -> ditributuion of features's attributes in each class
 # objective : To guess a variable possible contribution in a model visualy. Also to link variablme significance to the distribution
 # (this portion of the data of class x is in k interval so it relates to this aspect in real life)
+print("Univariate Analysis : histograms for the ditribution of a features's attributes in each class (Figure 1)")
 foi = feat_cols[0] # ft of interest " chosen here as the 1st ft just as an example ##! get from the operator
 fig, axes = plt.subplots(nrows=1, ncols=2,figsize=(16, 4))
 ax = sns.distplot(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[0]][foi], bins = 30, ax = axes[0], kde = False)
@@ -308,6 +204,7 @@ ax.set_title(encoded_classes[1])
 # (base length = number of values and height is the range where the values are)
 # Interpretation 1 : similar boxing across 2 classes shows same behaviour in regards to the ft analysed
 # Interpretation 2 : ###! last stop
+print("Univariate Analysis : LVplot (letter value plot) for classes behaviour in regards to a feature (Figure 2)")
 fig, axes = plt.subplots(nrows=1, ncols=1,figsize=(16, 4))
 ax = sns.lvplot(x=dframe_wo_nif[Resp_col_name_left], y=dframe_wo_nif[foi], palette='coolwarm')
 ax.set_title(foi)
@@ -319,14 +216,15 @@ ax.set_title(foi)
 
 
 # ======> Multivariate Analysis :
+print("MULTIVARIATE ANALYSIS")
 # 1) Heatmaps for correlation between features
 # This to just get a feeling of features that separate from the rest in correlation
-
+print("Multivariate Analysis : Heatmaps for correlation between features (Figure 3)")
 fig, axes = plt.subplots(nrows=1, ncols=2,figsize=(16, 4))
 fig.set_dpi(100)
-ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[0]][dframe_wo_nif_cols[2:10]].corr(), ax = axes[0], cmap='coolwarm')
+ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[0]][dframe_wo_nif_cols[index_ft_one:10]].corr(), ax = axes[0], cmap='coolwarm') #1 or 2 if samples col not at end or not
 ax.set_title(encoded_classes[0])
-ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[1]][dframe_wo_nif_cols[2:10]].corr(), ax = axes[1], cmap='coolwarm')
+ax = sns.heatmap(dframe_wo_nif[dframe_wo_nif[Resp_col_name_left]==encoded_classes[1]][dframe_wo_nif_cols[index_ft_one:10]].corr(), ax = axes[1], cmap='coolwarm')
 ax.set_title(encoded_classes[1])
 # des correlations pas très fortes mais toujours présentes existent entre certains features qui semblent proches en denomination
 ##! Le grd nombre de feature invit à répéter cette opération après le ranking avec des univariates tests
@@ -343,8 +241,94 @@ ax.set_title(encoded_classes[1])
 # this is to see that if an enclosed phenomenon is controled by these 2/3 fts, the globally inquired phenomenon is not
 # varying following that enclosed one.
 ##! make a function of this and call it anytime
+print("Multivariate Analysis : Equatorial coordinates to see if the values of a couple of features differ between the classes (Figure 4)")
 foi1 = feat_cols[0]
 foi2 = feat_cols[1]
 sns.lmplot(x=foi1, y=foi2, data=dframe_wo_nif, hue=Resp_col_name_left, fit_reg=False, palette='coolwarm', size=6, aspect=2)
 plt.title('Equatorial coordinates')
 
+# 3) FS
+print("Multivariate Analysis : features ranking with Student t-test p-values (Table 1)")
+if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]:
+	il1_train_x = dframe_wo_nif[list(dframe_wo_nif)[index_ft_one:-1]]
+else:
+	il1_train_x = dframe_wo_nif[list(dframe_wo_nif)[index_ft_one:]]
+il1_train_y = dframe_wo_nif.loc[:, [Resp_col_name_left]]
+feature_val_type = "real"
+Resp_col_name = Resp_col_name_left
+# encoded_classes # already exists
+# the ranking
+il1_fts_ranking = ranker_by_pval_v2(il1_train_x, il1_train_y, feature_val_type, Resp_col_name,encoded_classes)
+
+
+
+
+# restrict the material to build the metric not train and test here but the list of selected fts for the omc in the ranking
+
+# -----lets try to document the fts that had good enough pvalue to be part of the FS
+max_omc_il1 = int(np.ceil(float(len(dframe_wo_nif)) / 2))
+pval_last_feat_of_omc = il1_fts_ranking[2][(max_omc_il1-1)]
+list_pvals_for_fts_correlated_enough_to_response = [a_pval for a_pval in il1_fts_ranking[2] if a_pval <= pval_last_feat_of_omc]
+list_fts_correlated_enough_to_response = il1_fts_ranking[1][:len(list_pvals_for_fts_correlated_enough_to_response)]
+# # add the list of fts ranked to a collector to later compute the persistent accross seeds and the non persistent
+# all_seeds_col_of_list_fts_correlated_enough_to_response.append(list_fts_correlated_enough_to_response)
+# - creating the df to receive ["Seed","pval","feat ranked"] 2nd col content before the 1st col because the 1st col uses it to be created
+df_of_fts_correlated_enough_to_response_by_seed = pd.DataFrame()
+# content_Seed_column = np.repeat(aseed, len(list_pvals_for_fts_correlated_enough_to_response))  # the longest column is the indexes in the fold column so start from it
+content_Pvals_column = list_pvals_for_fts_correlated_enough_to_response # pretty straight forward as it is just the pvals
+content_Pvals_column_as_str = [str(val) for val in content_Pvals_column]
+content_FeatsRanked_column = list_fts_correlated_enough_to_response # it is the list of the feats but if it did not make the FS cut mark it as such
+content_rank_column = list(range(1, (max_omc_il1 + 1)))
+
+df_ranking4FS = pd.DataFrame(list(zip(content_rank_column, content_FeatsRanked_column, content_Pvals_column_as_str)), columns =['Rang','Features_ranked', 'Pval_of_univ_stat'])
+
+# -------step 20 : Save a copy of the final dframe  ##! last_stop this was okay and working, make it plush and hot launchable in CICS
+print("The feature ranking final dataframe (dframe) is ready ! Lets save it in a .csv file...")
+tag_ctype = "BRCA"
+tag_drugname = "REMAGUS02_NAC" # manually recordd in the treatments details files
+tag_drugID = "Treatment11"
+tag_respType = str(cohort_used) + "x" + "NAC"+ "x" + str(total_samples) + "x" + str(total_feats) + "xFSranking"
+tag_profilename = "GEX"
+# the output path has 3 parts : the root until the ouput folder, the output folder, and the filename
+# - lets make the file name
+output_filename_for_final_dframe = tag_ctype + "_" + tag_drugID + "_" + tag_respType + "_" + tag_profilename + ".csv"
+# - lets make the root until the ouput folder (the output folder excluded)
+if tag_decision_launching_way in ["cmd_line","cl"]: # launch the script in a terminal
+	os.chdir(os.path.dirname(os.path.abspath(__file__)))
+	root_until_output_folder = os.getcwd() # obtained by changing directory
+else: # launch the script line by line
+	if command_center == "Gustave_Roussy":
+		root_until_output_folder = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version"
+	else: # command_center == "Home"
+		root_until_output_folder = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version"
+# - lets make the output folder
+output_folder_on_same_lvl_than_main_name = "outputs"
+# - lets extend the root path to contain the output folder
+root_until_output_folder_w_output_folder = os.path.join(root_until_output_folder,output_folder_on_same_lvl_than_main_name)
+if not os.path.exists(root_until_output_folder_w_output_folder):
+	os.mkdir(root_until_output_folder_w_output_folder)
+# - lets make the full path to the file to save
+fullname = os.path.join(root_until_output_folder_w_output_folder,output_filename_for_final_dframe)
+# - lets us the full path to save the file
+df_ranking4FS.to_csv(fullname, index=None, header=True)
+print("File saved !")
+print(cohort_used,"dataset formatting for CICS analysis is done!")
+
+
+#==================
+
+
+
+
+
+
+
+
+# #...building the last dataframe (across all seeds) and appending it to the col of the dfs for across the seeds extended lists of feats selected
+# df_of_persistent_or_not_feats_accross_seeds = pd.DataFrame({'Seed': pd.Series(accross_seeds_frame_content_allsseeds_column), 'Features_ranked': pd.Series(accross_seeds_frame_content_persistent_column), 'Pval_of_univ_stat': pd.Series(accross_seeds_frame_content_nonpersistent_column)})
+# all_seeds_col_of_df_of_fts_correlated_enough_to_response_by_seed.append(df_of_persistent_or_not_feats_accross_seeds)
+# # the df for all extended feats lists across the seeds
+# df_of_fts_correlated_enough_to_response_across_all_seeds = pd.concat(all_seeds_col_of_df_of_fts_correlated_enough_to_response_by_seed)
+# # lets make up a filename for the extended FS and then use it to create the .csv file
+# output_filename_for_ExtFS_omc_mdl = basedir + "/" + "outputs" + "/" + "Output_" + tag_task_type + "_" + tag_alg + "-" + models_compared[0] + "_" + tag_ctype + "-" + tag_drugname + "-" + tag_profilename + "_" + tag_num_trial + "_ExtFS.csv"
+# df_of_fts_correlated_enough_to_response_across_all_seeds.to_csv(output_filename_for_ExtFS_omc_mdl, index=None, header=True)

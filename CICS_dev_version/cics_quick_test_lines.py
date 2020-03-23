@@ -23,14 +23,14 @@ import numpy as np # linear algebra and exploit arrays faster and easier computa
 import sys # to make all stdout display go to a log file (our .o in the results batch of files)
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import warnings
-from slate_engines.data_engine1_mgmt import data_mgmt_1,data_mgmt_2,data_mgmt_6,unifier_creator,data_loadout_right_corresponder,data_mgmt_5,feature_values_type_caracterisation,reduction_of_dataset_for_testing_purpose
-from slate_engines.data_engine2_allocation import add_entry_in_dict,il1_multiprocessing_handler,il1_sequential_processing_handler,stratKfolds_making
-from slate_engines.learning_algs_engine import classifier_introduction,classifier_model_training,classifier_model_prediction,classifier_as_Keras_DNN_intro_train_pred,classifier_as_SVM_intro_train_pred # all for RF ML alg choice using tag_name, training and prediction
-from slate_engines.learning_algs_engine import prediction_calling,raw_predictions_pusher,called_predictions_pusher # for predictions treatments
-# from slate_engines.Classif_algs_engine import ## to copy and use to separate here the others functions for any another classifier
-from slate_engines.metrics_engine import calculate_mcc_w_storing,pd_ml_classif_report_on_cm_binary
-from slate_engines.watcher_engine import timer_started,duration_from,bcolors,roc_curve_updater_after_one_iteration_of_the_mdl,roc_curve_finisher_after_all_iterations_of_the_mdl,average_roc_curve_init,average_roc_curve_finisher,df_of_results_for_metrics_one_mdl_creator,df_of_results_for_metrics_all_mdls_creator,df_of_results_for_FS_one_mdl_creator
-from slate_engines.fs_engine import ranker_by_pval_v2,OMC_founder_in_dict_MCs_MCCs
+from cics_engines.data_engine1_mgmt import data_mgmt_1,data_mgmt_2,data_mgmt_6,unifier_creator,data_loadout_right_corresponder,data_mgmt_5,feature_values_type_caracterisation,reduction_of_dataset_for_testing_purpose
+from cics_engines.data_engine2_allocation import add_entry_in_dict,il1_multiprocessing_handler,il1_sequential_processing_handler,stratKfolds_making
+from cics_engines.learning_algs_engine import classifier_introduction,classifier_model_training,classifier_model_prediction,classifier_as_Keras_DNN_intro_train_pred,classifier_as_SVM_intro_train_pred # all for RF ML alg choice using tag_name, training and prediction
+from cics_engines.learning_algs_engine import prediction_calling,raw_predictions_pusher,called_predictions_pusher # for predictions treatments
+# from cics_engines.Classif_algs_engine import ## to copy and use to separate here the others functions for any another classifier
+from cics_engines.metrics_engine import calculate_mcc_w_storing,pd_ml_classif_report_on_cm_binary
+from cics_engines.watcher_engine import timer_started,duration_from,bcolors,roc_curve_updater_after_one_iteration_of_the_mdl,roc_curve_finisher_after_all_iterations_of_the_mdl,average_roc_curve_init,average_roc_curve_finisher,df_of_results_for_metrics_one_mdl_creator,df_of_results_for_metrics_all_mdls_creator,df_of_results_for_FS_one_mdl_creator
+from cics_engines.fs_engine import ranker_by_pval_v2,OMC_founder_in_dict_MCs_MCCs
 from multiprocessing import cpu_count, current_process # 1st is for the num_cores acquisition, 2nd is for telling a process who carried-out a job
 import matplotlib.pyplot as plt # used to make plots # for roc curves
 from uncertainties import ufloat # to write the mean auc accross seeds with the incertainty in one cell and correctly

@@ -75,9 +75,9 @@ print("Environnement variables initialised.")
 print("Storing data files...")
 # stock the file and its separator
 if command_center == "Gustave_Roussy" :
-	file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ GR
+	file_path = "/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv"  # @ GR
 	sep_in_file = "\t"
-	supporting_file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ GR
+	supporting_file_path = "/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls"  # @ GR
 	sheet_id = "extractionCNahmias"
 else :  # command_center == "Home"
 	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ home

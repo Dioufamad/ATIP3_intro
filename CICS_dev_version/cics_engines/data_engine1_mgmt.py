@@ -5,7 +5,7 @@ import os # for files and directories exploration
 import pandas as pd # for dataframes manipulation
 # from sklearn.preprocessing import LabelEncoder # to change the Response values from string to classes 0 and 1 # not needed at the moment
 import locale
-from slate_engines.data_engine2_allocation import add_entry_in_dict # to update the data_loadout_right (dictionnary) following profiles exist (add to values of a key) or not (create a new key and add as first value)
+from cics_engines.data_engine2_allocation import add_entry_in_dict # to update the data_loadout_right (dictionnary) following profiles exist (add to values of a key) or not (create a new key and add as first value)
 #====================================================================
 
 # ---------------------Variables to initialise------------------------------------------
