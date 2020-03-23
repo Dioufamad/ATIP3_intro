@@ -11,17 +11,17 @@ import matplotlib.pyplot as plt
 from matplotlib import style
 import seaborn as sns
 sns.set_style('whitegrid')
-# import tensorflow as tf
-# from sklearn.model_selection import train_test_split, cross_val_predict
-# from sklearn.svm import SVC
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.linear_model import SGDClassifier
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.naive_bayes import GaussianNB
-# from sklearn.decomposition import PCA
-# from xgboost import XGBClassifier
-# from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
-# import time
+import tensorflow as tf
+from sklearn.model_selection import train_test_split, cross_val_predict
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.decomposition import PCA
+from xgboost import XGBClassifier
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
+import time
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 # %matplotlib inline
@@ -35,15 +35,12 @@ basedir = str(Path()) #for setting the working directory to create the paths to 
 # tag_decision_launching_way = "cmd_line"
 tag_decision_launching_way = "line_by_line"
 # ----for the location of the datasets
-# command_center = "Gustave_Roussy"
-command_center = "Home"
+command_center = "Gustave_Roussy"
+# command_center = "Home"
 # ----for the cohort choice
 cohort_used = "REMAGUS02"
 # cohort_used = "REMAGUS04"
 # cohort_used = "MDAnderson"
-# ----for the response strategy
-resp_strategy = "SCcR" # Severe Cases centered Response
-# resp_strategy = "TcR" # Treatment centered Response
 # -----for the plots
 SMALL_SIZE = 10
 MEDIUM_SIZE = 12
@@ -82,16 +79,11 @@ if command_center == "Gustave_Roussy" :
 	sep_in_file = "\t"
 	supporting_file_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ GR
 	sheet_id = "extractionCNahmias"
-	##! give her the user the choice of the appropriate file for the cohort
-	file4annot_path = "/home/amad/PycharmProjects/ATIP3_in_GR/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/annot/REMAGUS02_PSI_GS_54675.csv"
-	sep_in_file4annot = ","
 else :  # command_center == "Home"
 	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/tsv/REMAGUS02_Donnees_genomiques_226x54676_totales.tsv" # @ home
 	sep_in_file = "\t"
 	supporting_file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/support/REMAGUS02-Données cliniques.xls" # @ home
 	sheet_id = "extractionCNahmias"
-	file4annot_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/annot/REMAGUS02_PSI_GS_54675.csv"
-	sep_in_file4annot = ","
 # --------------proper processing
 print("Preprocessing...")
 # Objective : joining both tables (the one with the features and the one with the response) into one unique table Response-Features-Samples
@@ -100,39 +92,19 @@ if cohort_used == "REMAGUS02" :
 	#make a df out of the file (# ---> how to stock a dataset)
 	df_file = pd.read_csv(file_path,sep_in_file) ##! add skiprows=0 to skip lines 0 lines here, default is None
 	df_sup_file = pd.read_excel(supporting_file_path,sheet_id)
-	df_file4annot = pd.read_csv(file4annot_path,sep_in_file4annot)
-	# PART I -----> put in form the content of supplementary table (RIGHT)
 	# -------step 1 : rename the targeted columns on both columns
 	# we will need to capture columns and move them around or edit them for restricting, joining the columns etc.
 	# it is better to name the manipulated columns and their give also their future names
 	# needed columns : sample col, response col
 	old_Samples_col_name_left = "CLETRI" # given samples col name by the user ##! to get from the argument
 	Samples_col_name_left = "Model_bis" # for the left table
+	old_Resp_col_name_left = "RCH" # given resp col name by the user ##! to get from the argument
+	Resp_col_name_left = "BestResCategory"
 	old_Samples_col_name_right = "cletri"
 	# NB : the 2 samples columns of the 2 tables must have different names to join them later
 	Samples_col_name_right = "Model" # for the right table
 	common_samples_id_prefix = "CLETRI"
-	# -----> put in form the content of response in the table (LEFT)
-	if resp_strategy == "SCcR":
-		old_Resp_col_name_left1 = "HER2" # capture of the 3 cols of interest
-		old_Resp_col_name_left2 = "RO"
-		old_Resp_col_name_left3 = "RP"
-		def tn_maker(row): # the fonction to get the triple neg bool values in the new resp col
-			if row["HER2"]==0 and row["RO"]==0 and row["RP"]==0 :
-				return 1
-			else:
-				return 0
-		old_Resp_col_name_left = "SCcR1" # the name of the new resp col
-		df_sup_file[old_Resp_col_name_left] = df_sup_file.apply(lambda row: tn_maker(row), axis=1) # egtting the new col at last pos
-		df_sup_file = df_sup_file.loc[df_sup_file[old_Resp_col_name_left] == 1] # restrict the population to the samples of interest
-		Resp_col_name_left = "BestResCatSCcRleft"
-	else : # resp_strategy = "TcR"
-		old_Resp_col_name_left = "RCH" # given resp col name by the user ##! to get from the argument # capture of the 1 col of interest
-		df_sup_file = df_sup_file.loc[df_sup_file[old_Resp_col_name_left] == 1] # restrict the population to the samples of interest
-		Resp_col_name_left = "BestResCatTcRleft"
-	##!  make her a final condittion for a simple one col extration as response (eg the RCH for all what is going with it in the features
-
-	# -----> put in form the rest of the content of the response table (LEFT)
+	# -----> put in form the content of response table (LEFT)
 	# -------step 2 : restricting the support info table to only the needed columns # strategy : selected only the needed columns because they are not a lot
 	df_sup_file = df_sup_file[[old_Samples_col_name_left,old_Resp_col_name_left]]
 	# -------step 3 : rename the 2 kept columns for the left table
@@ -152,7 +124,7 @@ if cohort_used == "REMAGUS02" :
 		print(lost_samples,"samples has been lost during the cleaning of the uncomplete samples info of the left table")
 
 
-	# PART II -----> put in form the content of features table (RIGHT)
+	# -----> put in form the content of features table (RIGHT)
 	# -------step 5 : # changes columns into rows because the rows are not the samples
 	df_file = df_file.transpose()
 	# -------step 6 : # make the index (presently being the sample names) as a column (by resetting the index in a way to get the older index as a column)
@@ -252,11 +224,9 @@ if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # decide where are
 	feat_cols = df_joined.columns[1:-1]
 else:
 	feat_cols = df_joined.columns[2:]
-# -------step 18 : formatting the dtypes of each group of columns (help also to do before computing on fts vlues)
+# -------step 18 : formatting the dtypes of each group of columns
 # 1- put the samples name in dtype string (object)
 df_joined[Samples_col_name_right] = df_joined[Samples_col_name_right].astype(str) # strings dtype is object so we have to find object
-
-
 # 2- put the response values in 2 strings Res and Sen to be able to read easier any contigency,
 # that is if there are only 2 classes detected. Else, change them into string and leave them like that to be encoded later
 # get the response column in order to get the sorted unique values in it
@@ -268,9 +238,7 @@ if len(RespClasses_list) == 2 :
 	df_joined[Resp_col_name_left] = df_joined[Resp_col_name_left].astype(str) # response can be string dtype as it will be encoded later
 else : # there is not 2 classes...response can be string dtype as it will be encoded later
 	df_joined[Resp_col_name_left] = df_joined[Resp_col_name_left].astype(str)
-
-
-# 3- put the features values in float dtype ##! to do before the response)
+# 3- put the features values in float dtype
 # - replace the commas blocking the conversion of objects in floats
 df_joined[feat_cols] = df_joined[feat_cols].replace(",", ".", regex=True)
 # - a fast method used to change all fts values into floats
@@ -284,39 +252,6 @@ if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # depending if the
 	df_fts_back_as_df.insert(len(df_fts_back_as_df.axes[1]), Samples_col_name_right, df_joined[Samples_col_name_right]) # len(df_fts_back_as_df.axes[0]) = what would be the index of a new col as last
 else:
 	df_fts_back_as_df.insert(1, Samples_col_name_right, df_joined[Samples_col_name_right])
-
-#er##join these two parts in this order
-
-#---Renaming the fts
-# - read the file containg the table of annotations
-old_fts_cols_list = feat_cols.values.tolist()
-# old_fts_cols_list.sort()
-colname_of_previous_states = "PSI"
-df_file4annot.sort_values(colname_of_previous_states, axis=0, ascending=True, inplace=True, kind='mergesort') # sort the df following the values of the probesets
-# list_of_previous_states = df_file4annot[colname_of_previous_states].tolist()
-colname_of_after_states = "GS"
-# list_of_after_states = df_file4annot[colname_of_after_states].tolist()
-dict_previous_after_states = dict(zip(df_file4annot[colname_of_previous_states], df_file4annot[colname_of_after_states]))
-def fts_names_converter(old_list, dict2convertkeyinvalue):
-	new_list = [item if not item in dict2convertkeyinvalue else dict2convertkeyinvalue[item] for item in old_list]
-	return new_list
-new_fts_cols_list = fts_names_converter(old_fts_cols_list,dict_previous_after_states)
-dict2renamecols = dict(zip(old_fts_cols_list, new_fts_cols_list))
-df_fts_back_as_df.rename(columns=dict2renamecols, inplace=True)
-# lets put back the fts_cols selector as it should be
-if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # decide where are the fts
-	feat_cols = df_fts_back_as_df.columns[1:-1]
-else:
-	feat_cols = df_fts_back_as_df.columns[2:]
-
-
-
-
-
-
-
-###response after this
-
 dframe = df_fts_back_as_df
 del df_fts_back_as_df # cleaning
 del df_fts_as_series # cleaning

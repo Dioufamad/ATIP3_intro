@@ -37,10 +37,14 @@ Steps for Q1 :
 
 None
 
+#### Last caution
+- the folder atip3_material/3_cohorts... has to be replaced by its newest edition in the drive
+- get alias symbols for genes from here https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:29789
+(HUGO Gene Nomenclature Commitee)
 #### Last progress 
 - convert AFFIMETRIX probe set ID into gene symbol
 - add the 2 multivariate tests used for feature selection in SLATE
-
+- make a similar formater for R_04 ad MDA
 
 
  
