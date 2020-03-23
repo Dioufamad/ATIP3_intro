@@ -48,8 +48,8 @@ basedir = str(Path()) #for setting the working directory to create the paths to 
 # tag_decision_launching_way = "cmd_line"
 tag_decision_launching_way = "line_by_line"
 # ----for the location of the datasets
-# command_center = "Gustave_Roussy"
-command_center = "Home"
+command_center = "Gustave_Roussy"
+# command_center = "Home"
 if command_center == "Gustave_Roussy":
 	rest_of_abs_path_b4_content_root = "/home/amad/PycharmProjects/ATIP3_in_GR/"
 else : # command_center = "Home"
@@ -83,6 +83,12 @@ elif cohort_used == "MDAnderson":
 	file4annot_path = rest_of_abs_path_b4_content_root + "CICS/CICS_dev_version/atip3_material/3c_data_trial1/annot/REMAGUS04_PSI_GS_22215.csv" # uses the same as REMAGUS04
 	sep_in_file4annot = ","
 else: # when no cohort is chosen
+	file_path = "Unknown"
+	sep_in_file = "Unknown"
+	supporting_file_path = "Unknown"
+	sheet_id = "Unknown"
+	file4annot_path = "Unknown"
+	sep_in_file4annot = "Unknown"
 	print("No cohort has been chosen for ppreprocessing")
 print("paths to files manipulated and related specificities stored...")
 # ----for the response strategy
@@ -238,39 +244,25 @@ if cohort_used == "REMAGUS02" :
 			print(lost_features,"features has been lost during the cleaning of the uncomplete features info of the joined table")
 	else : # estimate the % of nan values in the row and the column, then delete the axis with more % and if below a certain %, impute it if user allow it
 		print("For the cleaning of the uncomplete features info of the joined table based on missing values percentage has still to be implemented")
-	####-----A checkpoint to check on data
 
-	# use this to get a peak at the dtypes in the final dataframe first 10 columns
-	# df.iloc[:, list(range(6)) + [-5,-4,-3,-2,-1]]
-	# df_joined[df_joined.columns[:10]].dtypes
+	####-----
+	print("----A checkpoint to check on joined table dtypes (first 5 columns and last 5 columns)...")
+	df_joined_preview = df_joined.iloc[:, list(range(6)) + [-5,-4,-3,-2,-1]]
+	print(df_joined_preview.info()) # on the model of df_joined[df_joined.columns[:10]].dtypes
 	####-----
 
-	# -------step 17 : giving names to the each of the 3 groups of columns to manipulate them in group using a name
+	print("-------step 17 : A-formatting the dtypes of each group of columns : grouping the features columns under a name to manipulate them easier...")
 	# sampl_col = df_joined.columns[0] is already Samples_col_name_right
 	# resp_col = df_joined.columns[1] is already Resp_col_name_left
 	if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # decide where are the fts
 		feat_cols = df_joined.columns[1:-1]
 	else:
 		feat_cols = df_joined.columns[2:]
-	# -------step 18 : formatting the dtypes of each group of columns (help also to do before computing on fts vlues)
-	# 1- put the samples name in dtype string (object)
+
+	print("-------step 17 : B-formatting the dtypes of each group of columns : put the samples name in dtype string (object)...") ##! help also to do before computing on fts vlues
 	df_joined[Samples_col_name_right] = df_joined[Samples_col_name_right].astype(str) # strings dtype is object so we have to find object
 
-
-	# 2- put the response values in 2 strings Res and Sen to be able to read easier any contigency,
-	# that is if there are only 2 classes detected. Else, change them into string and leave them like that to be encoded later
-	# get the response column in order to get the sorted unique values in it
-	RespBin = df_joined.loc[:,[Resp_col_name_left]]
-	# get the sorted unique values in it
-	RespClasses_list = sorted(RespBin.iloc[:, 0].unique())
-	if len(RespClasses_list) == 2 :
-		df_joined[Resp_col_name_left].replace(RespClasses_list,["Res","Sen"], inplace=True)
-		df_joined[Resp_col_name_left] = df_joined[Resp_col_name_left].astype(str) # response can be string dtype as it will be encoded later
-	else : # there is not 2 classes...response can be string dtype as it will be encoded later
-		df_joined[Resp_col_name_left] = df_joined[Resp_col_name_left].astype(str)
-
-
-	# 3- put the features values in float dtype ##! to do before the response)
+	print("-------step 17 : C1-formatting the dtypes of each group of columns : put the features values in float dtype...") ##! to do before the response)
 	# - replace the commas blocking the conversion of objects in floats
 	df_joined[feat_cols] = df_joined[feat_cols].replace(",", ".", regex=True)
 	# - a fast method used to change all fts values into floats
@@ -284,18 +276,17 @@ if cohort_used == "REMAGUS02" :
 		df_fts_back_as_df.insert(len(df_fts_back_as_df.axes[1]), Samples_col_name_right, df_joined[Samples_col_name_right]) # len(df_fts_back_as_df.axes[0]) = what would be the index of a new col as last
 	else:
 		df_fts_back_as_df.insert(1, Samples_col_name_right, df_joined[Samples_col_name_right])
-
-	#er##join these two parts in this order
-
+	print("-------step 17 : C2-renaming the fts using a table of annotations...") ##! to do before the response)
 	#---Renaming the fts
 	# - read the file containg the table of annotations
-	old_fts_cols_list = feat_cols.values.tolist()
-	# old_fts_cols_list.sort()
+	if tag_decision_move_samples_col_at_last_pos in ["yes", "y"]: # lets put back the fts_cols selector as it should be
+		feat_cols = df_fts_back_as_df.columns[1:-1]
+	else:
+		feat_cols = df_fts_back_as_df.columns[2:]
+	old_fts_cols_list = feat_cols.values.tolist()	# old way => old_fts_cols_list = feat_cols.values.tolist()
 	colname_of_previous_states = "PSI"
 	df_file4annot.sort_values(colname_of_previous_states, axis=0, ascending=True, inplace=True, kind='mergesort') # sort the df following the values of the probesets
-	# list_of_previous_states = df_file4annot[colname_of_previous_states].tolist()
 	colname_of_after_states = "GS"
-	# list_of_after_states = df_file4annot[colname_of_after_states].tolist()
 	dict_previous_after_states = dict(zip(df_file4annot[colname_of_previous_states], df_file4annot[colname_of_after_states]))
 	def fts_names_converter(old_list, dict2convertkeyinvalue):
 		new_list = [item if not item in dict2convertkeyinvalue else dict2convertkeyinvalue[item] for item in old_list]
@@ -308,50 +299,66 @@ if cohort_used == "REMAGUS02" :
 		feat_cols = df_fts_back_as_df.columns[1:-1]
 	else:
 		feat_cols = df_fts_back_as_df.columns[2:]
+	# df ready for response computations
+	df_b4_resp = df_fts_back_as_df
 
-
-
-
-
-
-
-	###response after this
-
-	dframe = df_fts_back_as_df
-	del df_fts_back_as_df # cleaning
-	del df_fts_as_series # cleaning
-	del df_joined # cleaning
-
-	####-----A checkpoint to check on data
-	# dframe[dframe.columns[:10]].dtypes
-	# dframe.info() # for an overall summary of remaining dtypes
+	####-----
+	print("----A checkpoint to check on joined table dtypes (first 5 columns and last 5 columns)...")
+	df_fts_back_as_df_preview = df_fts_back_as_df.iloc[:, list(range(6)) + [-5,-4,-3,-2,-1]]
+	print(df_fts_back_as_df_preview.info()) # on the model of df_joined[df_joined.columns[:10]].dtypes
 	####-----
 
-	# -------step 19 : formatting the response column, ordering it by class, displaying a report on the classes
-	RespBin = dframe.loc[:,[Resp_col_name_left]]  # get the 1st column of data ... # anciently it was dframe[Resp_col_name] but gives a series instead of a df
-	RespClasses = sorted(RespBin.iloc[:, 0].unique())
+	if clear_mem in ["yes", "y"]:
+		print("**clearing memory...")
+		del df_fts_back_as_df # clear memory
+		del df_fts_as_series # clear memory
+		del df_joined # cleaning
+
+	print("-------step 17 : D1-categorizing the population using the stratification of a variable...")
+	##!
+	df_aft_resp = df_b4_resp ##! del df_b4_resp
+	print("-------step 18 : D2-formatting the dtypes of each group of columns : put the response values in 2 dtype string (object) Res and Sen to be able to read easier any contigency table...")
+	# that is if there are only 2 classes detected. Else, change them into string and leave them like that to be encoded later
+	# get the response column in order to get the sorted unique values in it
+	RespBin = df_aft_resp.loc[:,[Resp_col_name_left]]
+	# get the sorted unique values in it
+	RespClasses_list = sorted(RespBin.iloc[:, 0].unique())
+	if len(RespClasses_list) == 2 :
+		df_aft_resp[Resp_col_name_left].replace(RespClasses_list,["Res","Sen"], inplace=True)
+		df_aft_resp[Resp_col_name_left] = df_aft_resp[Resp_col_name_left].astype(str) # response can be string dtype as it will be encoded later
+	else : # there is not 2 classes...response can be string dtype as it will be encoded later
+		df_aft_resp[Resp_col_name_left] = df_aft_resp[Resp_col_name_left].astype(str)
+	print("-------step 19 : D3-formatting the response column : encoding the classes, ssorting by class, displaying a report on the classes...")
+	RespBin = df_aft_resp.loc[:,[Resp_col_name_left]]  # get the 1st column of data ... # anciently it was dframe[Resp_col_name] but gives a series instead of a df
+	RespClasses_list = sorted(RespBin.iloc[:, 0].unique())
 	binary_classes_le = LabelEncoder()  # the encoder
-	binary_classes_le.fit(RespClasses)  # encode the classes to memorize
+	binary_classes_le.fit(RespClasses_list)  # encode the classes to memorize
 	encoded_classes = binary_classes_le.classes_ ##! change it into a list to access it directly (list of cols of array, same as getting the cols of a df)
-	del RespBin # clear mem
-	# del RespClasses # clear mem
+	if clear_mem in ["yes", "y"]:
+		print("**clearing memory...")
+		del RespBin # clear mem
+		# del RespClasses_list # clear mem
 	# sort the dataframe entries following response col values and remake a new index
 	# sort the df following the values of the resp column
-	dframe.sort_values(Resp_col_name_left, axis=0, ascending=True, inplace=True, kind='mergesort')
+	df_aft_resp.sort_values(Resp_col_name_left, axis=0, ascending=True, inplace=True, kind='mergesort')
 	# after the precedent sort, the indexes are not in order. make a new order for them
-	dframe = dframe.reset_index(drop="True")
+	df_aft_resp = df_aft_resp.reset_index(drop="True")
 	print("Describing the obtained final samples-features-response frame...")
-	total_samples = len(dframe.axes[0])
-	total_feats = len(dframe.axes[1])-2 # withdraw of the total the samples and the response col
+	total_samples = len(df_aft_resp.axes[0])
+	total_feats = len(df_aft_resp.axes[1])-2 # withdraw of the total the samples and the response col
 	print("The frame to analyse has ", total_samples,"samples and ",total_feats ,"features")
 	print("Among",total_samples,"samples,",len(encoded_classes),"classes has been detected as being : {}.".format(' and '.join(str(class_value) for class_value in encoded_classes)))
 	for class_value in encoded_classes:
-		class_size = dframe.iloc[:, list(dframe).index(Resp_col_name_left)].value_counts()[encoded_classes[list(encoded_classes).index(class_value)]] # before it was using dframe.iloc[:, 0]
+		class_size = df_aft_resp.iloc[:, list(df_aft_resp).index(Resp_col_name_left)].value_counts()[encoded_classes[list(encoded_classes).index(class_value)]] # before it was using dframe.iloc[:, 0]
 		class_size_perc = (class_size / total_samples)*100
 		print("The class value",class_value,"is found on",class_size,"samples counting for",'{:.3f}'.format(class_size_perc),"% of the samples")
 
-	# -------step 20 : Save a copy of the final dframe
-	print("The final dataframe (dframe) is ready ! Lets save it in a .csv file...")
+	dframe = df_aft_resp # the final dataframe to write in a .csv file
+	if clear_mem in ["yes", "y"]:
+		print("**clearing memory...")
+		del df_aft_resp # clear mem
+
+	print("-----step 20 : Saving a copy of the final dataframe in a .csv file...")
 	tag_ctype = "BRCA"
 	tag_drugname = "REMAGUS02_NAC" # manually recordd in the treatments details files
 	tag_drugID = "Treatment11"
@@ -380,14 +387,6 @@ if cohort_used == "REMAGUS02" :
 	print(cohort_used,"dataset formatting for CICS analysis is done!")
 	##! also delete all the uneccesary variables got sooner
 	##! also create a log of all operations
-
-
-	####-----A checkpoint to check on data
-	# ---> Let's take a first look at our dataset to see what we're working with!
-	# dframe[dframe.columns[:10]].head()
-	# ----> Let's find out about the data types we have accross columns :
-	# dframe.info()
-	####-----
 
 elif cohort_used == "REMAGUS04" :
 	print("dataset treatment to add")
