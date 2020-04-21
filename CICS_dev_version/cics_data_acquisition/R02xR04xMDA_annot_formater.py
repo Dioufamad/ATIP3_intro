@@ -8,6 +8,7 @@ import locale
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from pathlib import Path # to manage paths as into arguments
+from cics_engines.data_engine1_mgmt import data_mgmt_6
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> Variables to initialise------------------------------------------
 print("Initialising environnement variables...")
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8') #for setting the characters format
@@ -39,21 +40,18 @@ print("All imports and settings are successfully placed")
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> DATA PREPROCESSING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 print("Storing data files...")
-# stock the file and its separator
+# stock the file...
 if command_center == "Gustave_Roussy" :
 	file_path = "/atip3_material/3c_data_trial1/annotations/Annotations.xlsx"  # @ GR
-	sep_in_file = "\t"
-	if cohort_used == "REMAGUS02" :
-		sheet_id = "REMAGUS02"
-	else:
-		sheet_id = "REMAGUS04-MDAnderson"
 else :  # command_center == "Home"
 	file_path = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/3c_data_trial1/annotations/Annotations.xlsx" # @ GR
-	sep_in_file = "\t"
-	if cohort_used == "REMAGUS02" :
-		sheet_id = "REMAGUS02"
-	else:
-		sheet_id = "REMAGUS04-MDAnderson"
+#...and its separator
+sep_in_file = "\t"
+#...specify the sheet to use
+if cohort_used == "REMAGUS02" :
+	sheet_id = "REMAGUS02"
+else:
+	sheet_id = "REMAGUS04-MDAnderson"
 # --------------proper processing
 print("Preprocessing...")
 # Objective : obtaining a table with only 2 cols : the probesets and the gene symbols
@@ -73,11 +71,22 @@ gene_symbol_col = "GS"
 # 1 - change the 2 cols names
 df_sup_file.rename(columns={old_probes_id_col: probes_id_col, old_accessions_num_col : accessions_num_col,old_gene_symbol_col : gene_symbol_col}, inplace=True)
 # 2 - replace the nan values by a name telling what is missing explicitly
-df_sup_file[accessions_num_col].fillna("NA" + "wPSIas" + df_sup_file[probes_id_col].astype(str), inplace=True)
-df_sup_file[gene_symbol_col].fillna("NA" +"wGBANas"+ df_sup_file[accessions_num_col].astype(str), inplace=True)
+df_sup_file[probes_id_col].fillna("NA", inplace=True) # in the others column we will have a chance to put NA for the unknown values cells, we input it here also
+df_sup_file[accessions_num_col].fillna("NA", inplace=True)
+df_sup_file[gene_symbol_col].fillna("NA", inplace=True)
+df_sup_file[accessions_num_col] = "GBANas" + df_sup_file[accessions_num_col].astype(str) + "w" + "PSIas" + df_sup_file[probes_id_col].astype(str)
+df_sup_file[gene_symbol_col] = "GSas" + df_sup_file[gene_symbol_col].astype(str)
+df_sup_file[gene_symbol_col] = df_sup_file[gene_symbol_col].astype(str) + "w" + df_sup_file[accessions_num_col].astype(str)
+# - the 3rd column has to be kept only but duplicates can occurs it it :
+# - - if so, we have rename to all ocurrences with all 3 original col components and after that we delete the duplicates except first
+df_sup_file = data_mgmt_6(df_sup_file, probes_id_col) # sorting
+df_sup_file_w_marked_as_duplicates_rows_only = df_sup_file[df_sup_file.duplicated()] # dropping duplicates rows # for all duplicates do duplicated(subset=["GS"],keep=False)
+df_sup_file_indexes_to_drop = df_sup_file_w_marked_as_duplicates_rows_only.index
+df_sup_file = df_sup_file.drop(df_sup_file_indexes_to_drop)
+df_sup_file = df_sup_file.reset_index(drop=True)
 # 3 - dropping the extra accession number column
 df_sup_file.drop(labels=[accessions_num_col], axis=1, inplace=True)
-# -------step 4 : eliminate all probesets with nan values
+#====>--step 4 : eliminate all probesets with nan values (not needed except for logging issue)
 probesets_b4_cleaning = len(df_sup_file.axes[0])
 df_sup_file.dropna(axis='index', inplace=True)
 probesets_aft_cleaning = len(df_sup_file.axes[0])
@@ -89,7 +98,7 @@ else:
 	print(lost_probesets,"probesets has been lost during the cleaning of the uncomplete samples info of the left table")
 	# -------step 9 : # the index is maybe missing now rows. reset it in a way to not get a new column
 	df_sup_file = df_sup_file.reset_index(drop=True)
-
+#====>--end of step 4 : (not needed except for logging issue)
 
 #<<<<<<<----end of all that is data file specific about the preprocessing
 
@@ -138,6 +147,7 @@ fullname = os.path.join(root_until_output_folder_w_output_folder,output_filename
 df_sup_file.to_csv(fullname, index=None, header=True)
 print("File saved !")
 print(cohort_used,"probesets annotation formatting for features names conversion is done!")
+print("File location is",fullname)
 ##! also delete all the uneccesary variables got sooner
 ##! also create a log of all operations
 

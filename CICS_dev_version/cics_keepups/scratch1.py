@@ -1,6 +1,85 @@
 # separators
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>IMPORTS
 ##! last_stop
+# # lets put back the fts_cols selector as it should be in case we need it again
+# feat_cols_list_b4_change = feat_cols
+# if state_of_samples_pos == "at_last":  # decide where are the fts
+#     feat_cols = df_fts_back_as_df.columns[num_resp_cols_from_sup:-1]
+# else:
+#     feat_cols = df_joined.columns[(num_resp_cols_from_sup + 1):]
+#
+# print("----step 17 : E-A report on if all the initial features names have been successfully found and changed...")
+# list_of_unchanged_fts = []
+# for ft_name in list(feat_cols):
+#     if ft_name in list(feat_cols_list_b4_change):
+#         list_of_unchanged_fts.append(ft_name)
+# if len(list_of_unchanged_fts) != 0:
+#     print(len(list_of_unchanged_fts), "initial features have not been found in the conversion dictionnary, hence their names not changed.")
+# else:
+#     print("All initial features have been found in the conversion dictionnary andchanged")
+# ###===============================================================================================================###
+# resp_strategy = "SCcR" # Severe Cases centered Response
+# # resp_strategy = "TcR" # Treatment centered Response
+# dict_resp_str_fullnames = {"SCcR":"Severe Cases centered Response","TcR":"Treatment centered Response"}
+# resp_str_chosen_fullname = dict_resp_str_fullnames[resp_strategy]
+
+# 	#==========> put this at the end (not necessary already done)
+# 	print("-------step 14 : moving the response col from left tablle to 1st position of joined table...") # store the resp col that is last, drop it from the df and then insert it again at the 1st position of the df
+# 	Resp_col_to_move = df_joined[Resp_col_name_left]
+# 	df_joined.drop(labels=[Resp_col_name_left], axis=1, inplace=True)
+# 	df_joined.insert(0, Resp_col_name_left, Resp_col_to_move)
+# 	if clear_mem in ["yes", "y"]:
+# 		print("**clearing memory...")
+# 		del Resp_col_to_move # clear memory
+# 	#==========> put this at the end
+# 	###===============================================================================================================###
+# 	# ====>not needed for now and also included in CICS when response will be selected
+# 	print("-------step 19 : D3-formatting the response column : encoding the classes, ssorting by class, displaying a report on the classes...")
+# 	RespBin = df_aft_resp.loc[:,[Resp_col_name_left]]  # get the 1st column of data ... # anciently it was dframe[Resp_col_name] but gives a series instead of a df
+# 	RespClasses_list = sorted(RespBin.iloc[:, 0].unique())
+# 	binary_classes_le = LabelEncoder()  # the encoder
+# 	binary_classes_le.fit(RespClasses_list)  # encode the classes to memorize
+# 	encoded_classes = binary_classes_le.classes_ ##! change it into a list to access it directly (list of cols of array, same as getting the cols of a df)
+# 	if clear_mem in ["yes", "y"]:
+# 		print("**clearing memory...")
+# 		del RespBin # clear mem
+# 		# del RespClasses_list # clear mem
+# 	# ====> end of not needed
+# 	###===============================================================================================================###
+# 	# ====> not needed (use after encoding to report on the selected response for analysis)
+# 	print("Among",total_samples,"samples,",len(encoded_classes),"classes has been detected as being : {}.".format(' and '.join(str(class_value) for class_value in encoded_classes)))
+# 	for class_value in encoded_classes:
+# 		class_size = df_aft_resp.iloc[:, list(df_aft_resp).index(Resp_col_name_left)].value_counts()[encoded_classes[list(encoded_classes).index(class_value)]] # before it was using dframe.iloc[:, 0]
+# 		class_size_perc = (class_size / total_samples)*100
+# 		print("The class value",class_value,"is found on",class_size,"samples counting for",'{:.3f}'.format(class_size_perc),"% of the samples")
+# 	# ====> end of not needed (use after encoding to report on the selected response for analysis)
+# 	###===============================================================================================================###
+# 	# ====> not needed (use this part to put code for ATIP3 categrization for restriction)
+# 	print("-------step X : D1-categorizing the population for rstriction using the stratification of a variable... (WILL BE DONE LATER)")
+# 	##! add thi
+# 	# ====> end of not needed
+#
+# num_resp_cols_from_sup
+# # ----for the response strategy
+# resp_used = "RCHdefined"
+# resp_used_in_full = "Only defined RCH samples are kept"
+# resp_used = "TNBCdefined"
+# resp_used_in_full = "Only defined TNBC samples are kept"
+# resp_used = "RCHandTNBCdefined"
+# resp_used_in_full = "Only defined RCH and TNBC samples are kept"
+# resp_used = "RCH3HSdefined"
+# resp_used_in_full = "Only defined -RCH and the 3 hormonals status- samples are kept"
+# resp_used = "RCH3HSall"
+# resp_used_in_full = "All the samples with -defined or not RCH and 3 hormonals status, are kept"
+# #================
+# df_sup_file[probes_id_col].fillna("NA", inplace=True) # in the others column we will have a chance to put NA for the unknown values cells, we input it here also
+# df_sup_file[accessions_num_col].fillna("NA", inplace=True)
+# df_sup_file[gene_symbol_col].fillna("NA", inplace=True)
+# df_sup_file[probes_id_col] = "PSIas" + df_sup_file[probes_id_col].astype(str)
+# df_sup_file[accessions_num_col] = "GBANas" + df_sup_file[accessions_num_col].astype(str)
+# df_sup_file[gene_symbol_col] = "GSas" + df_sup_file[gene_symbol_col].astype(str)
+# df_sup_file[accessions_num_col] = df_sup_file[accessions_num_col].astype(str) + "w" + df_sup_file[probes_id_col].astype(str)
+# df_sup_file[gene_symbol_col] = df_sup_file[gene_symbol_col].astype(str) + "w" + df_sup_file[accessions_num_col].astype(str)
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END OF IMPORTS
 # #cleaning out the coerced values and reporting on the loss due to formatting the fts dtypes
 # samples_b4_coercing = len(dframe.axes[0])
