@@ -33,15 +33,15 @@ else : # command_center = "Home"
 print("command center used recognized...")
 # ----for the columns to keep in all 3 cohorts df
 if resp_used == "RCH3HSall":
-    list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_RO","BestResCat_as_RP", "BestResCat_as_HER2","GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
+	list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_RO","BestResCat_as_RP", "BestResCat_as_HER2","GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
 elif resp_used == "RCH3HSdefined":
-    list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_RO","BestResCat_as_RP", "BestResCat_as_HER2","GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
+	list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_RO","BestResCat_as_RP", "BestResCat_as_HER2","GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
 elif resp_used == "RCHdefined":
-    list_of_cols_to_keep = ["BestResCat_as_RCH", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
+	list_of_cols_to_keep = ["BestResCat_as_RCH", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
 elif resp_used == "TNBCdefined":
-    list_of_cols_to_keep = ["BestResCat_as_TNBC", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
+	list_of_cols_to_keep = ["BestResCat_as_TNBC", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
 else : # resp_used == "RCHandTNBCdefined":
-    list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_TNBC", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
+	list_of_cols_to_keep = ["BestResCat_as_RCH", "BestResCat_as_TNBC", "GSasMTUS1wGBANasAL096842wPSIas212096_s_at","Model", "Cohort"]
 # ----making the dataset to use when the cohort(s) to manipulate is(are) known
 #----paths to files of populations in cohorts
 
@@ -49,59 +49,59 @@ R02_ds_folder_path = rest_of_abs_path_b4_content_root + "CICS/CICS_dev_version/a
 R04_ds_folder_path = rest_of_abs_path_b4_content_root + "CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R04/"
 MDA_ds_folder_path = rest_of_abs_path_b4_content_root + "CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/MDA/"
 if resp_used == "RCH3HSall":
-    file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx226Sx54675Fx4RasRCH3HSall_GEX.csv"
-    file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx142Sx22277Fx4RasRCH3HSall_GEX.csv"
-    file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx4RasRCH3HSall_GEX.csv"
+	file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx226Sx54675Fx4RasRCH3HSall_GEX.csv"
+	file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx142Sx22277Fx4RasRCH3HSall_GEX.csv"
+	file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx4RasRCH3HSall_GEX.csv"
 elif resp_used == "RCH3HSdefined":
-    file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx218Sx54675Fx4RasRCH3HSdefined_GEX.csv"
-    file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx4RasRCH3HSdefined_GEX.csv"
-    file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx129Sx22283Fx4RasRCH3HSdefined_GEX.csv"
+	file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx218Sx54675Fx4RasRCH3HSdefined_GEX.csv"
+	file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx4RasRCH3HSdefined_GEX.csv"
+	file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx129Sx22283Fx4RasRCH3HSdefined_GEX.csv"
 elif resp_used == "RCHdefined":
-    file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx221Sx54675Fx1RasRCHdefined_GEX.csv"
-    file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx1RasRCHdefined_GEX.csv"
-    file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx1RasRCHdefined_GEX.csv"
+	file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx221Sx54675Fx1RasRCHdefined_GEX.csv"
+	file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx1RasRCHdefined_GEX.csv"
+	file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx1RasRCHdefined_GEX.csv"
 elif resp_used == "TNBCdefined":
-    file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx226Sx54675Fx1RasTNBCdefined_GEX.csv"
-    file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx142Sx22277Fx1RasTNBCdefined_GEX.csv"
-    file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx1RasTNBCdefined_GEX.csv"
+	file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx226Sx54675Fx1RasTNBCdefined_GEX.csv"
+	file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx142Sx22277Fx1RasTNBCdefined_GEX.csv"
+	file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx1RasTNBCdefined_GEX.csv"
 else:  # resp_used == "RCHandTNBCdefined":
-    file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx221Sx54675Fx2RasRCHandTNBCdefined_GEX.csv"
-    file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx2RasRCHandTNBCdefined_GEX.csv"
-    file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx2RasRCHandTNBCdefined_GEX.csv"
+	file_path_R02 = R02_ds_folder_path + "BRCA_Treatment11_REMAGUS02xNACx221Sx54675Fx2RasRCHandTNBCdefined_GEX.csv"
+	file_path_R04 = R04_ds_folder_path + "BRCA_Treatment12_REMAGUS04xNACx139Sx22277Fx2RasRCHandTNBCdefined_GEX.csv"
+	file_path_MDA = MDA_ds_folder_path + "BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx2RasRCHandTNBCdefined_GEX.csv"
 #---making the dataset to use
 sep_in_file = ","
 if cohort_used == "REMAGUS02":
-    df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
-    df_file_R02.insert(len(list(df_file_R02.columns)), 'Cohort', 'Remagus02')
-    df_file_R02 = df_file_R02[list_of_cols_to_keep]
-    df_file = df_file_R02
+	df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
+	df_file_R02.insert(len(list(df_file_R02.columns)), 'Cohort', 'Remagus02')
+	df_file_R02 = df_file_R02[list_of_cols_to_keep]
+	df_file = df_file_R02
 elif cohort_used == "REMAGUS04":
-    df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
-    df_file_R04.insert(len(list(df_file_R04.columns)), 'Cohort', 'Remagus04')
-    df_file_R04 = df_file_R04[list_of_cols_to_keep]
-    df_file = df_file_R04
+	df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
+	df_file_R04.insert(len(list(df_file_R04.columns)), 'Cohort', 'Remagus04')
+	df_file_R04 = df_file_R04[list_of_cols_to_keep]
+	df_file = df_file_R04
 elif cohort_used == "MDAnderson":
-    df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
-    df_file_MDA.insert(len(list(df_file_MDA.columns)), 'Cohort', 'MDAnderson')
-    df_file_MDA = df_file_MDA[list_of_cols_to_keep]
-    df_file = df_file_MDA
+	df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
+	df_file_MDA.insert(len(list(df_file_MDA.columns)), 'Cohort', 'MDAnderson')
+	df_file_MDA = df_file_MDA[list_of_cols_to_keep]
+	df_file = df_file_MDA
 else: # cohort_used == "Allthree":
-    #R02_part
-    df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
-    df_file_R02.insert(len(list(df_file_R02.columns)), 'Cohort', 'Remagus02')
-    df_file_R02 = df_file_R02[list_of_cols_to_keep]
-    #R04_part
-    df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
-    df_file_R04.insert(len(list(df_file_R04.columns)), 'Cohort', 'Remagus04')
-    df_file_R04 = df_file_R04[list_of_cols_to_keep]
-    #MDA_part
-    df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
-    df_file_MDA.insert(len(list(df_file_MDA.columns)), 'Cohort', 'MDAnderson')
-    df_file_MDA = df_file_MDA[list_of_cols_to_keep]
-    # joining the dataframes by cohort into one df for all cohorts
-    list_of_datasets_to_concat = [df_file_R02, df_file_R04, df_file_MDA]
-    df_file_final = pd.concat(list_of_datasets_to_concat)
-    df_file = df_file_final
+	#R02_part
+	df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
+	df_file_R02.insert(len(list(df_file_R02.columns)), 'Cohort', 'Remagus02')
+	df_file_R02 = df_file_R02[list_of_cols_to_keep]
+	#R04_part
+	df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
+	df_file_R04.insert(len(list(df_file_R04.columns)), 'Cohort', 'Remagus04')
+	df_file_R04 = df_file_R04[list_of_cols_to_keep]
+	#MDA_part
+	df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
+	df_file_MDA.insert(len(list(df_file_MDA.columns)), 'Cohort', 'MDAnderson')
+	df_file_MDA = df_file_MDA[list_of_cols_to_keep]
+	# joining the dataframes by cohort into one df for all cohorts
+	list_of_datasets_to_concat = [df_file_R02, df_file_R04, df_file_MDA]
+	df_file_final = pd.concat(list_of_datasets_to_concat)
+	df_file = df_file_final
 
 #>>>>>>>>>>>>>>>>>>>>>Finding the colname of ATIP3 (done once to get the result below, no need to rerun)
 # # df_file is obtained already so we use it (preferably when created from R02 with 2RasRCHandTNBCdefined
@@ -123,60 +123,60 @@ name_of_atip3_col_to_use = "GSasMTUS1wGBANasAL096842wPSIas212096_s_at"
 
 #>>>>>>>>>>>>>>>>>>>Finding the number of commons features across the 3 cohorts
 if cohort_used == "Allthree":
-    sep_in_file = ","
-    # R02_part
-    df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
-    # R04_part
-    df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
-    # MDA_part
-    df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
-    if resp_used == "RCH3HSall":
-        num_resp_cols_from_sup = 4
-        # the group of resp columns  for each cohort
-        feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
-        feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
-        feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
-    elif resp_used == "RCH3HSdefined":
-        num_resp_cols_from_sup = 4
-        # the group of resp columns  for each cohort
-        feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
-        feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
-        feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
-    elif resp_used == "RCHdefined":
-        num_resp_cols_from_sup = 1
-        # the group of resp columns  for each cohort
-        feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
-        feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
-        feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
-    elif resp_used == "TNBCdefined":
-        num_resp_cols_from_sup = 1
-        # the group of resp columns  for each cohort
-        feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
-        feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
-        feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
-    else:  # resp_used == "RCHandTNBCdefined":
-        num_resp_cols_from_sup = 2
-        # the group of resp columns  for each cohort
-        feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
-        feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
-        feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
-    # get a list that is the intersection
-    sorted_list_of_common_fts = sorted(list(set(list(feat_cols_R02)) & set(list(feat_cols_R04)) & set(list(feat_cols_MDA))))
-    sorted_list_of_non_common_fts_in_R02 = sorted(list(set(list(feat_cols_R02)) - set(sorted_list_of_common_fts)))      # use this for the specific to 2 lists set([1, 2]).symmetric_difference(set([2, 3]))
-    sorted_list_of_non_common_fts_in_R04 = sorted(list(set(list(feat_cols_R04)) - set(sorted_list_of_common_fts)))
-    sorted_list_of_non_common_fts_in_MDA = sorted(list(set(list(feat_cols_MDA)) - set(sorted_list_of_common_fts)))
-    sorted_list_of_fts_only_in_R02 = sorted(list(set(list(feat_cols_R02)) - set(list(feat_cols_R04)) - set(list(feat_cols_MDA))))
-    sorted_list_of_fts_only_in_R04 = sorted(list(set(list(feat_cols_R04)) - set(list(feat_cols_R02)) - set(list(feat_cols_MDA))))
-    sorted_list_of_fts_only_in_MDA = sorted(list(set(list(feat_cols_MDA)) - set(list(feat_cols_R02)) - set(list(feat_cols_R04))))
-    print("Descrition of features representation across cohorts : ")
-    print(" - Common features :",len(sorted_list_of_common_fts))
-    print(" - Non common features in Remagus02 :", len(sorted_list_of_non_common_fts_in_R02))
-    print(" - Non common features in Remagus04 :", len(sorted_list_of_non_common_fts_in_R04))
-    print(" - Non common features in MDAnderson :", len(sorted_list_of_non_common_fts_in_MDA))
-    print(" - Features only in Remagus02 :", len(sorted_list_of_fts_only_in_R02))
-    print(" - Features only in Remagus04 :", len(sorted_list_of_fts_only_in_R04))
-    print(" - Features only in MDAnderson :", len(sorted_list_of_fts_only_in_MDA))
-    ##! make a table reporting present or not with 4cols (all features list, xist in R02, xist in R04, xist in MDA) with ft or Yes or No
+	sep_in_file = ","
+	# R02_part
+	df_file_R02 = pd.read_csv(file_path_R02, sep_in_file)
+	# R04_part
+	df_file_R04 = pd.read_csv(file_path_R04, sep_in_file)
+	# MDA_part
+	df_file_MDA = pd.read_csv(file_path_MDA, sep_in_file)
+	if resp_used == "RCH3HSall":
+		num_resp_cols_from_sup = 4
+		# the group of resp columns  for each cohort
+		feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
+		feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
+		feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
+	elif resp_used == "RCH3HSdefined":
+		num_resp_cols_from_sup = 4
+		# the group of resp columns  for each cohort
+		feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
+		feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
+		feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
+	elif resp_used == "RCHdefined":
+		num_resp_cols_from_sup = 1
+		# the group of resp columns  for each cohort
+		feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
+		feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
+		feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
+	elif resp_used == "TNBCdefined":
+		num_resp_cols_from_sup = 1
+		# the group of resp columns  for each cohort
+		feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
+		feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
+		feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
+	else:  # resp_used == "RCHandTNBCdefined":
+		num_resp_cols_from_sup = 2
+		# the group of resp columns  for each cohort
+		feat_cols_R02 = df_file_R02.columns[num_resp_cols_from_sup:-1]
+		feat_cols_R04 = df_file_R04.columns[num_resp_cols_from_sup:-1]
+		feat_cols_MDA = df_file_MDA.columns[num_resp_cols_from_sup:-1]
+	# get a list that is the intersection
+	sorted_list_of_common_fts = sorted(list(set(list(feat_cols_R02)) & set(list(feat_cols_R04)) & set(list(feat_cols_MDA))))
+	sorted_list_of_non_common_fts_in_R02 = sorted(list(set(list(feat_cols_R02)) - set(sorted_list_of_common_fts)))      # use this for the specific to 2 lists set([1, 2]).symmetric_difference(set([2, 3]))
+	sorted_list_of_non_common_fts_in_R04 = sorted(list(set(list(feat_cols_R04)) - set(sorted_list_of_common_fts)))
+	sorted_list_of_non_common_fts_in_MDA = sorted(list(set(list(feat_cols_MDA)) - set(sorted_list_of_common_fts)))
+	sorted_list_of_fts_only_in_R02 = sorted(list(set(list(feat_cols_R02)) - set(list(feat_cols_R04)) - set(list(feat_cols_MDA))))
+	sorted_list_of_fts_only_in_R04 = sorted(list(set(list(feat_cols_R04)) - set(list(feat_cols_R02)) - set(list(feat_cols_MDA))))
+	sorted_list_of_fts_only_in_MDA = sorted(list(set(list(feat_cols_MDA)) - set(list(feat_cols_R02)) - set(list(feat_cols_R04))))
+	print("Descrition of features representation across cohorts : ")
+	print(" - Common features :",len(sorted_list_of_common_fts))
+	print(" - Non common features in Remagus02 :", len(sorted_list_of_non_common_fts_in_R02))
+	print(" - Non common features in Remagus04 :", len(sorted_list_of_non_common_fts_in_R04))
+	print(" - Non common features in MDAnderson :", len(sorted_list_of_non_common_fts_in_MDA))
+	print(" - Features only in Remagus02 :", len(sorted_list_of_fts_only_in_R02))
+	print(" - Features only in Remagus04 :", len(sorted_list_of_fts_only_in_R04))
+	print(" - Features only in MDAnderson :", len(sorted_list_of_fts_only_in_MDA))
+	##! make a table reporting present or not with 4cols (all features list, xist in R02, xist in R04, xist in MDA) with ft or Yes or No
 
 #>>>>>>>>>>>>>>>>>>> An Histogramm representiing ATIP3 values distribution across the 3 cohorts
 # step 1 one unique histrogram
@@ -221,9 +221,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 #>>>>>>>>>>>>>>>>>>> A violin plot representiing ATIP3 values distribution across the 3 cohorts
 # step 1-1 : the 3 cohorts in 1 plot, horizontal violin plots, not splited and with points as inner
 plot = sns.violinplot(data=df_file, y="Cohort", x=name_of_atip3_col_to_use,
-                      palette="muted",order=["Remagus02", "Remagus04","MDAnderson"],
-                      split=False,scale_hue=True,
-                      scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
+					  palette="muted",order=["Remagus02", "Remagus04","MDAnderson"],
+					  split=False,scale_hue=True,
+					  scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
 
 #- setting up the figure
 plt.xlabel("ATIP3 expression values", fontsize=18)
@@ -236,9 +236,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 # step 1-2 : the 2 cohorts R02 and R04 in 1 plot, horizontal violin plots, not splited and with points as inner
 df_data12 = df_file.loc[df_file['Cohort'].isin(["Remagus02", "Remagus04"])]
 plot = sns.violinplot(data=df_data12, y="Cohort", x=name_of_atip3_col_to_use,
-                      palette="muted",order=["Remagus02", "Remagus04"],
-                      split=False,scale_hue=True,
-                      scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
+					  palette="muted",order=["Remagus02", "Remagus04"],
+					  split=False,scale_hue=True,
+					  scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
 
 #- setting up the figure
 plt.xlabel("ATIP3 expression values", fontsize=18)
@@ -251,9 +251,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 # step 1-3 : 1 cohort (MDA) in 1 plot, horizontal violin plots, not splited and with points as inner
 df_data13 = df_file.loc[df_file['Cohort'].isin(["MDAnderson"])]
 plot = sns.violinplot(data=df_data13, y="Cohort", x=name_of_atip3_col_to_use,
-                      palette="muted",order=["MDAnderson"],
-                      split=False,scale_hue=True,
-                      scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
+					  palette="muted",order=["MDAnderson"],
+					  split=False,scale_hue=True,
+					  scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH" for split
 
 #- setting up the figure
 plt.xlabel("ATIP3 expression values", fontsize=18)
@@ -265,9 +265,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 
 # step 2-1 : all 3 cohorts in 1 plot, vertical violin plots, splited with RCH and with inner as quartile
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_RCH", data=df_file,
-                      palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_RCH", data=df_file,
+					  palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -279,9 +279,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 # step 2-2 : 2 cohorts (R02,R04), vertical violin plots, splited with RCH and with inner as quartile
 df_data22 = df_file.loc[df_file['Cohort'].isin(["Remagus02", "Remagus04"])]
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_RCH", data=df_data22,
-                      palette="muted", split=True,order=["Remagus02", "Remagus04"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_RCH", data=df_data22,
+					  palette="muted", split=True,order=["Remagus02", "Remagus04"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -293,9 +293,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 # step 2-3 : 1 cohorts MDA, vertical violin plots, splited with RCH and with inner as quartile
 df_data23 = df_file.loc[df_file['Cohort'].isin(["MDAnderson"])]
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_RCH", data=df_data23,
-                      palette="muted", split=True,order=["MDAnderson"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_RCH", data=df_data23,
+					  palette="muted", split=True,order=["MDAnderson"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -312,9 +312,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 # step 3-1 : all 3 cohorts in 1 plot, vertical violin plots, splited with TNBC and with inner as quartile
 df_file["BestResCat_as_TNBC"].replace(["Res", "Sen"], ["No", "Yes"], inplace=True)
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_TNBC", data=df_file,
-                      palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_TNBC", data=df_file,
+					  palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -327,9 +327,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 df_file["BestResCat_as_TNBC"].replace(["Res", "Sen"], ["No", "Yes"], inplace=True)
 df_data32 = df_file.loc[df_file['Cohort'].isin(["Remagus02", "Remagus04"])]
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_TNBC", data=df_data32,
-                      palette="muted", split=True,order=["Remagus02", "Remagus04"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_TNBC", data=df_data32,
+					  palette="muted", split=True,order=["Remagus02", "Remagus04"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -342,9 +342,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 df_file["BestResCat_as_TNBC"].replace(["Res", "Sen"], ["No", "Yes"], inplace=True)
 df_data33 = df_file.loc[df_file['Cohort'].isin(["MDAnderson"])]
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_TNBC", data=df_data33,
-                      palette="muted", split=True,order=["MDAnderson"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_TNBC", data=df_data33,
+					  palette="muted", split=True,order=["MDAnderson"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -366,9 +366,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 #>>>>>>>>>>>>>>>>>>>>>>>>>>> PLOTS MOCKUPS
 # >>> distribution of ATIP3 values over the 3 cohorts : plot for the splited vertical violin plots and the split is over RCH
 plot = sns.violinplot(x="Cohort", y=name_of_atip3_col_to_use,
-                      hue="BestResCat_as_RCH", data=df_file_final,
-                      palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
-                      scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
+					  hue="BestResCat_as_RCH", data=df_file_final,
+					  palette="muted", split=True,order=["Remagus02", "Remagus04","MDAnderson"],
+					  scale="count",scale_hue=False,inner="quartile",bw=1,cut=0)
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)
 plt.ylabel("ATIP3 expression values", fontsize=18)
@@ -380,9 +380,9 @@ plt.savefig('/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_
 
 # >>> distribution of ATIP3 values over the 3 cohorts : plot for the splited horizontal violin plots and the split is over RCH and with  points as inner
 plot = sns.violinplot(data=df_file_final, y="Cohort", x=name_of_atip3_col_to_use,
-                      palette="muted",order=["Remagus02", "Remagus04","MDAnderson"],
-                      split=False,scale_hue=True,
-                      scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH"
+					  palette="muted",order=["Remagus02", "Remagus04","MDAnderson"],
+					  split=False,scale_hue=True,
+					  scale="count",inner="point",bw=0.2,cut=0) # hue="BestResCat_as_RCH"
 
 #- setting up the figure
 plt.xlabel("Cohorts", fontsize=18)

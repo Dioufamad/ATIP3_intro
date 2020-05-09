@@ -1,0 +1,81 @@
+    1  cwd
+    2  pwd
+    3  uname
+    4  uname -r
+    5  uname -v
+    6  uname --m
+    7  uname -p
+    8  uname -o
+    9  lshw short
+   10  lshw -short
+   11  sudo lshw -short
+   12  lscpu
+   13  lsblk -a
+   14  sensors
+   15  lspci | grep VGA
+   16  sudo apt update
+   17  apt list --upgradable 
+   18  sudo apt upgrade 
+   19  sudo apt autoremove 
+   20  sudo apt-get update
+   21  sudo apt-get install vlc
+   22  sudo snap install clementine
+   23  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+   24  echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+   25  sudo apt update
+   26  sudo apt install sublime-text 
+   27  sudo add-apt-repository ppa:deluge-team/ppa
+   28  sudo apt install deluge
+   29  sudo add-apt-repository ppa:apandada1/brightness-controller
+   30  sudo apt-get update 
+   31  sudo apt-get install brightness-controller
+   32  sudo snap install pycharm-community --classic
+   33  sudo apt-get install digikam
+   34  sudo add-apt-repository ppa:ubuntuhandbook1/audacity
+   35  sudo apt-get update 
+   36  sudo apt-get install audacity
+   37  sudo apt install nemo
+   38  sudo add-apt-repository ppa:embrosyn/cinnamon
+   39  sudo apt install nemo
+   40  apt-cache search nemo
+   41  xdg-mime default nemo.desktop inode/directory
+   42  application/x-gnome-saved-search
+   43  sudo apt install nemo-media-columns nemo-audio-tab 
+   44  sudo apt install gnome-tweaks
+   45  sudo systemctl disable bluetooth.service 
+   46  sudo apt update 
+   47  sudo apt install git
+   48  git --version
+   49  git config --global user.name "Amad_Diouf"
+   50  git config --global user.email "amaddioufb13@gmail.com"
+   51  git config --global color.ui true
+   52  git config --list
+   53  cd Downloads/
+   54  ll
+   55  sudo dpkg -i mendeleydesktop_1.19.4-stable_amd64.deb 
+   56  sudo apt-get update
+   57  sudo apt-get install mendeleydesktop 
+   58  apt --fix-broken install
+   59  sudo apt --fix-broken install
+   60  sudo apt install apt-transport-https software-properties-common
+   61  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+   62  sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+   63  sudo apt update
+   64  sudo apt install r-base
+   65  R --version
+   66  sudo apt install gdebi-core
+   67  cd Downloads/
+   68  lll
+   69  ll
+   70  sudo gdebi rstudio-1.2.5042-amd64.deb 
+   71  rstudio 
+   72  sudo rstudio 
+   73  sudo apt install chrome-gnome-shell
+   74  R --version
+   75  sudo apt-get update -y
+   76  sudo apt-get install -y libxml2-dev
+   77  sudo apt-get install -y libcurl4-openssl-dev
+   78  sudo apt-get install -y libssl-dev
+   79  sudo apt-get install -y libfontconfig1-dev
+   80  sudo apt-get install -y libcairo2-dev
+   81  history > last_500cmds.txt
