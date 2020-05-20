@@ -1,0 +1,22 @@
+,,,,
+,HKGs_advised,Mean_Rank,CvrankNoDup_where_advised_HKG_been_found,Similar_HKGs_where_advised_HKG_been_found
+,CALR,1,[1215],['CALR']
+,ACTG1,2,[69],['ACTB /// ACTG1']
+,GAPDH,3,[76],['GAPDH']
+,RPS27A,4,[19],['RPS27A']
+,ACTB,5,"[10, 69]","['ACTB', 'ACTB /// ACTG1']"
+,RPS20,6,[70],['RPS20 /// SNORD54']
+,HNRPD,7,[],[]
+,NACA,8,"[107, 301]","['NACA', 'NACAP1']"
+,NONO,9,[1143],['NONO']
+,UBC,10,[25],['UBC']
+,RPL38,11,[64],['RPL38']
+,RPL11,12,"[693, 810]","['MRPL11', 'RPL11']"
+,PTMAP7,13,[],[]
+,GFRA4,14,[],[]
+,RPL7,15,"[36, 77]","['RPL7', 'RPL7A /// SNORD24 /// SNORD36A /// SNORD36B']"
+,CDC42,16,"[1180, 2461, 2974]","['CDC42SE1', 'CDC42', 'CDC42EP4']"
+,EIF3H,17,[2390],['EIF3H']
+,RPS11,18,"[24, 1402]","['RPS11 /// SNORD35B', 'MRPS11']"
+,RPL26L1,19,[1219],['RPL26L1']
+,UBE2D3,20,[485],['UBE2D3']

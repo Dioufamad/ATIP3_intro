@@ -29,7 +29,7 @@ command_center = "Home"
 if command_center == "Gustave_Roussy":
 	rest_of_abs_path_b4_content_root = "/home/amad/PycharmProjects/ATIP3_in_GR/"
 else : # command_center = "Home"
-	rest_of_abs_path_b4_content_root = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/"
+	rest_of_abs_path_b4_content_root = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/"
 print("command center used recognized...")
 # ----for the columns to keep in all 3 cohorts df
 if resp_used == "RCH3HSall":

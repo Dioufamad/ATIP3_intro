@@ -15,6 +15,7 @@
 import pandas as pd # for dataframes manipulation
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler # to change the Response values from string to classes 0 and 1 # not needed at the moment
 import numpy as np # linear algebra and exploit arrays faster and easier computations
+from numpy import seterr,isneginf # used to manage the change into log2 o values in a np array
 import os #for bash command lines in python
 import locale
 # import matplotlib.pyplot as plt
@@ -66,23 +67,23 @@ command_center = "Home"
 if command_center == "Gustave_Roussy":
 	rest_of_abs_path_b4_content_root = "/home/amad/PycharmProjects/ATIP3_in_GR/"
 else : # command_center = "Home"
-	rest_of_abs_path_b4_content_root = "/home/khamasiga/PALADIN_1/3CEREBRO/garage/projects/ATIP3/"
+	rest_of_abs_path_b4_content_root = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/"
 print("command center used recognized...")
 # ----for the cohort choice
 # cohort_used = "REMAGUS02"
-cohort_used = "REMAGUS04"
-# cohort_used = "MDAnderson"
+# cohort_used = "REMAGUS04"
+cohort_used = "MDAnderson"
 # ----for the response strategy
-# resp_used = "RCH3HSall"
-# resp_used_in_full = "All the samples with -defined or not RCH and 3 hormonals status, are kept"
+resp_used = "RCH3HSall"
+resp_used_in_full = "All the samples with -defined or not RCH and 3 hormonals status, are kept"
 # resp_used = "RCH3HSdefined"
 # resp_used_in_full = "Only defined -RCH and the 3 hormonals status- samples are kept"
 # resp_used = "RCHdefined"
 # resp_used_in_full = "Only defined RCH samples are kept"
 # resp_used = "TNBCdefined"
 # resp_used_in_full = "Only defined TNBC samples are kept"
-resp_used = "RCHandTNBCdefined"
-resp_used_in_full = "Only defined RCH and TNBC samples are kept"
+# resp_used = "RCHandTNBCdefined"
+# resp_used_in_full = "Only defined RCH and TNBC samples are kept"
 print("For population restriction, the response strategy chosen is",resp_used_in_full,"(",resp_used,")...")
 #---for the files to manipulate
 # stock the file and its separator # whatever command_center is chosen
@@ -1084,6 +1085,12 @@ elif cohort_used == "MDAnderson" :
 	# - a fast method used to change all fts values into floats
 	# old_fts_col_names = df_joined[feat_cols].columns # not needed because old_fts_col_names is feat_cols
 	df_fts_as_series = df_joined_feat_cols_only_no_commas.values.astype(np.float64)
+	#####--------> special operation : change all values here in log2 because they are not
+	seterr(divide='ignore')
+	df_fts_as_series = np.log2(df_fts_as_series)
+	seterr(divide='warn')
+	df_fts_as_series[isneginf(df_fts_as_series)] = 0
+	#####--------> special operation (end)
 	df_fts_back_as_df = pd.DataFrame(df_fts_as_series)
 	df_fts_back_as_df.columns = feat_cols
 	# df_joined[feat_cols] = df_fts_back_as_df

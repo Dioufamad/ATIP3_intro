@@ -1,0 +1,21 @@
+HKGs_advised,Mean_Rank,CvrankNoDup_where_advised_HKG_been_found,Similar_HKGs_where_advised_HKG_been_found
+CALR,1,[1089],['CALR']
+ACTG1,2,[18],['ACTB /// ACTG1']
+GAPDH,3,[268],['GAPDH']
+RPS27A,4,[71],['RPS27A']
+ACTB,5,"[18, 28, 706]","['ACTB /// ACTG1', 'ACTB', 'ACTBP9 /// ACTBP9']"
+RPS20,6,[20],['RPS20 /// SNORD54']
+HNRPD,7,[],[]
+NACA,8,"[2, 85]","['NACAP1', 'NACA']"
+NONO,9,[126],['NONO']
+UBC,10,[14],['UBC']
+RPL38,11,[122],['RPL38']
+RPL11,12,"[106, 4711]","['RPL11', 'MRPL11']"
+PTMAP7,13,[],[]
+GFRA4,14,[],[]
+RPL7,15,"[26, 46, 75]","['RPL7', 'RP6-11O7.2 /// RPL7P52', 'RPL7A /// SNORD24 /// SNORD36A /// SNORD36B']"
+CDC42,16,"[315, 424, 918, 4568, 5079]","['CDC42', 'CDC42EP2', 'CDC42SE1', 'CDC42BPA', 'CDC42EP4']"
+EIF3H,17,[1196],['EIF3H']
+RPS11,18,"[24, 2617, 3394]","['RPS11 /// SNORD35B', 'MRPS11', 'RPS11']"
+RPL26L1,19,[1190],['RPL26L1']
+UBE2D3,20,[139],['UBE2D3']

@@ -1,0 +1,178 @@
+####>>>>>>>>>>> SCRIPT FOR HIERARCHICAL CLUSTERING HEATMAPS <<<<<<<<### 
+# source : https://jcoliver.github.io/learn-r/008-ggplot-dendrograms-and-heatmaps.html
+
+#--1--Clean up the environment (optional)
+rm(list = ls()) # 
+
+#--2--Creating two folders we’ll use to organize our efforts
+# in order to control where these folders will be created, set the working directory first (cmd line or in Rstudio options do "Session > Set working directory")
+dir.create("data")
+dir.create("output")
+
+#--2--Load needed librairies
+library("ggplot2")
+library("ggdendro")
+library("reshape2")
+library("grid")
+library("ape")
+
+#--3--Setting the dataset to manipulate (some options throughout the script change depending on chosen dataset)
+# - uncomment one of these 4 following lines to choose a dataset
+# cohort <- "Remagus02"
+cohort <- "Remagus04"
+# cohort <- "MDAnderson"
+# cohort <-  "another_dataset_you_want_to_use"
+# - store the path of the dataset
+if (cohort=="Remagus02") {
+  path2file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R02/BRCA_Treatment11_REMAGUS02xNACx226Sx54675Fx4RasRCH3HSall_GEX.csv" # for R02
+} else if (cohort=="Remagus04") {
+  path2file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/R04/BRCA_Treatment12_REMAGUS04xNACx142Sx22277Fx4RasRCH3HSall_GEX.csv" # for R04
+} else if (cohort=="MDAnderson") {
+  path2file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/atip3_material/datasets_to_process_folder/MDA/BRCA_Treatment13_MDAndersonxNACx133Sx22283Fx4RasRCH3HSall_GEX.csv" # for MDA
+} else
+  print("Replace this statement with a command to store the path of another_dataset_you_want_to_use")
+
+#--4--Data preparation
+# - make a dataframe from dataset# 
+otter <- read.csv(file = path2file, header = TRUE)
+# - a preview of the dataframe
+# head(otter) # uncomment to use; not recommended because too much features a dataset for this head to show a complete line 
+# - restrict the dataframe to only the columns needed 
+if (cohort=="Remagus02") {
+  cols2keep <- c("Model","GSasMTUS1wGBANasAI695017wPSIas212093_s_at","GSasMTUS1wGBANasBE552421wPSIas212095_s_at","GSasMTUS1wGBANasAL096842wPSIas212096_s_at","GSasMTUS1wGBANasAI028661wPSIas239576_at") # for R02
+} else if (cohort=="Remagus04") {
+  cols2keep <- c("Model","GSasMTUS1wGBANasAI695017wPSIas212093_s_at","GSasMTUS1wGBANasBE552421wPSIas212095_s_at","GSasMTUS1wGBANasAL096842wPSIas212096_s_at") # for R04
+} else if (cohort=="MDAnderson") {
+  cols2keep <- c("Model","GSasMTUS1wGBANasAI695017wPSIas212093_s_at","GSasMTUS1wGBANasBE552421wPSIas212095_s_at","GSasMTUS1wGBANasAL096842wPSIas212096_s_at") # for MDA
+} else
+  print("Replace this statement with a command to restrict the dataframe to only the columns needed in another_dataset_you_want_to_use")
+
+otter <- otter[cols2keep]
+# - rename the columns with shorter names (the probe name can that way be the only part of the column name that appear on the figures)
+if (cohort=="Remagus02") {
+  names(otter) <- c("Model","212093_s_at","212095_s_at","212096_s_at","239576_at") # for R02
+} else if (cohort=="Remagus04") {
+  names(otter) <- c("Model","212093_s_at","212095_s_at","212096_s_at") # for R04
+} else if (cohort=="MDAnderson") {
+  names(otter) <- c("Model","212093_s_at","212095_s_at","212096_s_at") # for MDA
+} else
+  print("Replace this statement with a command to rename the columns with shorter names in another_dataset_you_want_to_use")
+# - scale the data variables (columns 4-9) to replace values with measures having mean  0 and variance 1
+otter.scaled <- otter
+if (cohort=="Remagus02") {
+  otter.scaled[, c(2:5)] <- scale(otter.scaled[, 2:5]) # for R02
+} else if (cohort=="Remagus04") {
+  otter.scaled[, c(2:4)] <- scale(otter.scaled[, 2:4]) # for R04
+} else if (cohort=="MDAnderson") {
+  otter.scaled[, c(2:4)] <- scale(otter.scaled[, 2:4]) # for MDA
+} else
+  print("Replace this statement with a command to scale the data variables in another_dataset_you_want_to_use")
+
+# --5--Clustering
+# the idea : build two plots in one figure. one plot is the dendrogram from the clustering, the other plot is the heatmap
+# the method : we will build the two plots  separately then use the            framework offered by the grid library to put them together. 
+# -A- Making the dendrogram (ie the clustering).
+if (cohort=="Remagus02") {
+  otter.matrix <- as.matrix(otter.scaled[, c(2:5)]) # for R02
+} else if (cohort=="Remagus04") {
+  otter.matrix <- as.matrix(otter.scaled[, c(2:4)]) # for R04
+} else if (cohort=="MDAnderson") {
+  otter.matrix <- as.matrix(otter.scaled[, c(2:4)]) # for MDA
+} else
+  print("Replace this statement with a command to select the right range of columns to use as distance matrix for another_dataset_you_want_to_use")
+
+rownames(otter.matrix) <- otter.scaled$Model
+otter.dendro <- as.dendrogram(hclust(d = dist(x = otter.matrix),method = "average")) 
+# - making of a tree that we can cut later (following a number of clusters we desire) to extract a list of our samples and the cluster menbership of each 
+otter.row_clust <- hclust(d = dist(x = otter.matrix),method = "average")  
+# - create the dendrogram plot (+ make the tips labels (the samples names) a bit smaller)
+dendro.plot <- ggdendrogram(data = otter.dendro, rotate = TRUE) + theme(axis.text.y = element_text(size = 6))
+# - preview the plot
+print(dendro.plot) 
+# -B- Making the heatmap
+# - transforming data to a “long” format (having a single measure in each row by storing the variable name in a col using melt() from package reshape2)
+otter.long <- melt(otter.scaled, id = c("Model"))
+# - solving issue (i) : the tips of the dendrogram can be in a different order than the ones in the heatmap. The heatmap tips can be reordered to match the tips order in the dendrogram
+# use the order.dendrogram() function to extract the dendrogram tips order stored in the .dendro object
+otter.order <- order.dendrogram(otter.dendro)
+# in the data that has to be used for the heatmap, reorder the levels according to the ordering we got from the dendrogram
+otter.long$Model <- factor(x = otter.long$Model,
+                               levels = otter.scaled$Model[otter.order], 
+                               ordered = TRUE)
+# - create the heatmap plot
+# the heatmap can be created now as the data needed for it is in a similar order than in the dendrogram. we use the geom_tile function in the ggplot library
+# also, through the theme() function when calling the library ggplot , some convenients graphical arrangements can be made : 
+# 1st : the samples names appearing on the heatmap can be removed with element_blank() (because the dendrogram is set to appear later aligned with the heatmap,both containing the same order of samples, so no need to put it again for the heatmap)
+# 2nd : move the legend to the top of the heatmap to put dendrogram and heatmap closer together
+heatmap.plot <- ggplot(data = otter.long, aes(x = variable, y = Model)) +
+  geom_tile(aes(fill = value)) +
+  scale_fill_gradient2() +
+  theme(axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+# - preview the heatmap
+print(heatmap.plot)
+
+# -C- putting the two figures (dendrogram and heatmap) together
+grid.newpage()
+print(heatmap.plot, vp = viewport(x = 0.4, y = 0.52, width = 0.8, height = 1.0))
+print(dendro.plot, vp = viewport(x = 0.90, y = 0.47, width = 0.2, height = 0.99)) 
+# one issue here : the dendrogram and the heatmap "should" be aligned but so each dendrogram sample-name-S-carrying-tip lines up with a not-needing-to-have-the-sample-name-S-anymore- row in the heatmap plot
+# the issue is from device to device, the viewport used can vary in display and hence the alignment be less acceptable...
+# this alignment can be perfected through trial and error by changing 2 parameters of the viewport of the  dendrogram, moving it up and down for ajustment : 
+# param1-: y (vertical justification of the dendrogram. closer to 0 is lower and closer to 1 is higher. recommended : 0.5)
+# use 0.5
+# param2-: height (proportion of the viewport used by the dendro. initially 1.0, as the legend occupies a bit of the top, recommended is 0.92)
+# a combinaison working for most devices is y=0.4 and height=0.85
+
+
+# --6--Extract the list of your cluster members when given a desired number of clusters
+# - a tree to be cut has already been made when creating the dendrogram (see previously this line ----otter.row_clust <- hclust(d = dist(x = otter.matrix),method = "average"----
+# - display the result of a cut for 2 clusters
+sort(cutree(otter.row_clust, k=2))
+# - store the cluster membership created that way
+clust_mem_R02 <- sort(cutree(otter.row_clust, k=2))
+# - create the file name for the file where to report the cluster membership )
+if (cohort=="Remagus02") {
+  filename = paste("R02_clusters", ". txt",sep = ""); # for R02
+} else if (cohort=="Remagus04") {
+  filename = paste("R04_clusters", ".txt",sep = ""); # for R04
+} else if (cohort=="MDAnderson") {
+  filename = paste("MDA_clusters", ".txt",sep = ""); # for MDA
+} else
+  print("Replace this statement with a command to create the file name for where to report the cluster membership for another_dataset_you_want_to_use")
+# - save a file where the cluster membership has been reported (its a dataframe with 2 columns : one column for the samples name, another column for the cluster the sample belongs to)
+write.table(clust_mem_R02,file=filename,sep=",",col.names=TRUE,row.names=TRUE);
+# - store a dataframe of the file to visualize it easily (optional, uncomment to use)
+# # move the table of cluster membership to output folder and read it
+# if (cohort=="Remagus02") {
+#   textfile <- read.csv(file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/cics_data_acquisition/output/R02_clusters.txt", header = TRUE) # for R02
+# } else if (cohort=="Remagus04") {
+#   textfile <- read.csv(file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/cics_data_acquisition/output/R04_clusters.txt", header = TRUE) # for R04
+# } else if (cohort=="MDAnderson") {
+#   textfile <- read.csv(file = "/home/amad/PALADIN_1/3CEREBRO/garage/projects/ATIP3/CICS/CICS_dev_version/cics_data_acquisition/output/MDA_clusters.txt", header = TRUE) # for MDA
+# } else
+#   print("Replace this statement with a command to give the path to the of the file where cluster memberhsip has been reported for another_dataset_you_want_to_use")
+
+# --7--Additional plots that might be interesting
+# - a plot of the dendro (horizontal version) (optional, uncomment to use)
+# plot(otter.row_clust, hang = -1, cex = 0.5 ) 
+# - a plot of the dendro (vertical version) (optional, uncomment to use)
+# ggdendrogram(data = otter.dendro, rotate = TRUE) + theme(axis.text.y = element_text(size = 8))
+# - a circular phylogenetic tree using library ape (used to display an entire view of the clusters size in comparison to each other)
+if (cohort=="Remagus02") {
+  colors = c("blue","red") # for R02
+} else if (cohort=="Remagus04") {
+  colors = c("red","blue")  # for R04
+} else if (cohort=="MDAnderson") {
+  colors = c("blue","red") # for MDA
+} else
+  print("Replace this statement with a command to give the path to the of the file where cluster memberhsip has been reported for another_dataset_you_want_to_use")
+
+clus4 = cutree(otter.row_clust, 2)
+plot(as.phylo(otter.row_clust), type = "fan", tip.color = colors[clus4],
+     label.offset = 0.2, cex = 0.6)
+
+
+###>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END OF FILE <<<<<<<<<<<<<<<<<<<<<<<###
